@@ -45,6 +45,21 @@
             background: rgba(16, 185, 129, 0.2);
             transform: translateY(-2px);
         }
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .btn-yes { background: #059669; color: white; }
+        .btn-yes:hover { background: #047857; }
+        .btn-no { background: #334155; color: white; border-color: #475569; }
+        .btn-no:hover { background: #1e293b; }
+        .btn-end { background: #dc2626; color: white; width: 100%; margin-top: 8px; }
+        .btn-end:hover { background: #b91c1c; }
+
         #chat-window::-webkit-scrollbar {
             width: 6px;
         }
@@ -64,7 +79,7 @@
             </div>
             <div>
                 <h1 class="text-white font-bold text-lg">TechGrid Expert</h1>
-                <p class="text-emerald-100 text-xs">Manual Knowledge Base Mode</p>
+                <p class="text-emerald-100 text-xs">Interactive Support Mode</p>
             </div>
         </div>
 
@@ -72,16 +87,16 @@
         <div id="chat-window" class="flex-1 p-4 overflow-y-auto space-y-4">
             <div class="flex justify-start">
                 <div class="message-bubble bg-slate-800 text-slate-300 p-3 rounded-2xl rounded-tl-none border border-slate-700 shadow-md">
-                    Hello! I'm the manual TechGrid assistant. I can provide direct links and information about our infrastructure, status, and sub-pages.
+                    Hello! I'm the TechGrid assistant. Ask me anything about our systems or documentation.
                 </div>
             </div>
         </div>
 
         <!-- Input Area -->
-        <div class="p-4 bg-slate-900 border-t border-slate-800">
+        <div id="input-container" class="p-4 bg-slate-900 border-t border-slate-800">
             <div class="flex gap-2">
                 <input type="text" id="user-input" 
-                    placeholder="Search TechGrid sites..." 
+                    placeholder="Type your message..." 
                     class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all">
                 <button id="send-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white p-2 rounded-xl transition-colors shadow-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -93,49 +108,31 @@
     </div>
 
     <script>
-        // Manual Knowledge Base with explicit URLs for sub-pages
         const TECHGRID_DATA = [
             {
                 keywords: ["what is", "do", "about"],
-                response: "TechGrid Systems provides high-performance infrastructure solutions and systematic technical documentation. We specialize in scalable systems architecture and automated deployment workflows.",
+                response: "TechGrid Systems provides high-performance infrastructure solutions and systematic technical documentation. We specialize in scalable systems architecture.",
                 url: "https://www.techgrid-systems.org.uk/about",
                 linkText: "Learn about TechGrid"
             },
             {
                 keywords: ["status", "up", "down", "working"],
-                response: "You can monitor the real-time status of all TechGrid infrastructure components on our dedicated status dashboard.",
+                response: "You can monitor the real-time status of all TechGrid infrastructure components on our status dashboard.",
                 url: "https://status.techgrid-systems.org.uk",
                 linkText: "View Live Status Page"
             },
             {
                 keywords: ["docs", "documentation", "guide", "manual"],
-                response: "Our technical documentation is hosted on our main portal, covering everything from system setup to API references.",
+                response: "Our technical documentation covers system setup and API references.",
                 url: "https://www.techgrid-systems.org.uk/docs",
                 linkText: "Browse Documentation"
-            },
-            {
-                keywords: ["github", "source", "code", "repo"],
-                response: "We maintain an open-first approach. You can find our public repositories and system configurations on GitHub.",
-                url: "https://github.com/techgrid-systems",
-                linkText: "Visit GitHub Organization"
-            },
-            {
-                keywords: ["contact", "support", "help", "email"],
-                response: "Need direct assistance? You can reach our support team through our contact portal.",
-                url: "https://www.techgrid-systems.org.uk/contact",
-                linkText: "Contact Support"
-            },
-            {
-                keywords: ["infrastructure", "architecture", "stack"],
-                response: "TechGrid's infrastructure is built on modular, scalable principles using modern CI/CD pipelines.",
-                url: "https://www.techgrid-systems.org.uk/infrastructure",
-                linkText: "Architecture Overview"
             }
         ];
 
         const chatWindow = document.getElementById('chat-window');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
+        const inputContainer = document.getElementById('input-container');
 
         function appendMessage(role, text, link = null) {
             const wrapper = document.createElement('div');
@@ -156,7 +153,6 @@
                 linkCard.target = "_blank";
                 linkCard.className = "link-card";
                 linkCard.innerHTML = `
-                    <div class="text-[10px] uppercase tracking-wider opacity-60">Official Link</div>
                     <div class="font-bold text-sm">${link.text}</div>
                     <div class="text-[10px] truncate opacity-50">${link.url}</div>
                 `;
@@ -180,6 +176,84 @@
             return wrapper;
         }
 
+        function toggleInput(show) {
+            inputContainer.style.display = show ? 'block' : 'none';
+        }
+
+        function askIfFinished() {
+            setTimeout(() => {
+                const wrapper = document.createElement('div');
+                wrapper.className = "flex justify-start";
+                const bubble = document.createElement('div');
+                bubble.className = "message-bubble bg-slate-800 text-slate-300 p-4 rounded-2xl rounded-tl-none border border-slate-700 shadow-md w-full";
+                
+                bubble.innerHTML = `
+                    <p class="mb-3">Are you finished with this inquiry?</p>
+                    <div class="flex gap-2">
+                        <button onclick="handleFinished(true)" class="action-btn btn-yes flex-1">Yes</button>
+                        <button onclick="handleFinished(false)" class="action-btn btn-no flex-1">No</button>
+                    </div>
+                `;
+                
+                wrapper.appendChild(bubble);
+                chatWindow.appendChild(wrapper);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+                toggleInput(false);
+            }, 1000);
+        }
+
+        function handleFinished(isFinished) {
+            const lastBubble = chatWindow.lastElementChild;
+            lastBubble.remove();
+
+            if (isFinished) {
+                const wrapper = document.createElement('div');
+                wrapper.className = "flex justify-start";
+                const bubble = document.createElement('div');
+                bubble.className = "message-bubble bg-slate-800 text-slate-300 p-4 rounded-2xl rounded-tl-none border border-slate-700 shadow-md w-full";
+                
+                bubble.innerHTML = `
+                    <p>Thank you for contacting TechGrid Systems.</p>
+                    <button onclick="location.reload()" class="action-btn btn-end">End Conversation</button>
+                `;
+                
+                wrapper.appendChild(bubble);
+                chatWindow.appendChild(wrapper);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            } else {
+                const wrapper = document.createElement('div');
+                wrapper.className = "flex justify-start";
+                const bubble = document.createElement('div');
+                bubble.className = "message-bubble bg-slate-800 text-slate-300 p-4 rounded-2xl rounded-tl-none border border-slate-700 shadow-md w-full";
+                
+                bubble.innerHTML = `
+                    <p class="mb-3">Do you have another question you would like to ask?</p>
+                    <div class="flex gap-2">
+                        <button onclick="handleAnother(true)" class="action-btn btn-yes flex-1">Yes</button>
+                        <button onclick="handleAnother(false)" class="action-btn btn-no flex-1">No</button>
+                    </div>
+                `;
+                
+                wrapper.appendChild(bubble);
+                chatWindow.appendChild(wrapper);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            }
+        }
+
+        function handleAnother(wantMore) {
+            const lastBubble = chatWindow.lastElementChild;
+            lastBubble.remove();
+
+            if (wantMore) {
+                appendMessage('bot', "Please go ahead and type your next question.");
+                toggleInput(true);
+                userInput.focus();
+            } else {
+                appendMessage('bot', "Refreshing conversation...");
+                setTimeout(() => location.reload(), 1500);
+            }
+        }
+
         function handleChat() {
             const text = userInput.value.trim();
             if (!text) return;
@@ -192,8 +266,6 @@
             setTimeout(() => {
                 indicator.remove();
                 const lowerText = text.toLowerCase();
-                
-                // Find matching entry based on keywords
                 const match = TECHGRID_DATA.find(entry => 
                     entry.keywords.some(key => lowerText.includes(key))
                 );
@@ -201,12 +273,14 @@
                 if (match) {
                     appendMessage('bot', match.response, { url: match.url, text: match.linkText });
                 } else {
-                    appendMessage('bot', "I'm not sure about that specific detail. You can browse our full sitemap here:", { 
+                    appendMessage('bot', "I'm not sure about that. You can view our sitemap here:", { 
                         url: "https://www.techgrid-systems.org.uk/sitemap", 
                         text: "TechGrid Sitemap" 
                     });
                 }
-            }, 600);
+                
+                askIfFinished();
+            }, 800);
         }
 
         sendBtn.addEventListener('click', handleChat);
