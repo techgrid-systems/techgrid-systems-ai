@@ -33,17 +33,19 @@
         .source-link {
             display: inline-block;
             font-size: 0.7rem;
-            padding: 2px 6px;
+            padding: 4px 8px;
             background: rgba(16, 185, 129, 0.1);
             border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 4px;
+            border-radius: 6px;
             color: #34d399;
             margin-top: 8px;
-            margin-right: 4px;
+            margin-right: 6px;
             transition: all 0.2s;
+            text-decoration: none;
         }
         .source-link:hover {
             background: rgba(16, 185, 129, 0.2);
+            border-color: #34d399;
         }
         #chat-window::-webkit-scrollbar {
             width: 6px;
@@ -52,11 +54,13 @@
             background: #334155;
             border-radius: 10px;
         }
+        .markdown-content ul { list-style-type: disc; margin-left: 1.5rem; margin-top: 0.5rem; }
+        .markdown-content p { margin-bottom: 0.75rem; }
     </style>
 </head>
 <body class="bg-slate-950 h-screen flex items-center justify-center p-4 font-sans text-slate-200">
 
-    <div class="w-full max-w-2xl h-[80vh] bg-slate-900 rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-slate-800">
+    <div class="w-full max-w-2xl h-[85vh] bg-slate-900 rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-slate-800">
         <!-- Header -->
         <div class="bg-emerald-600 p-5 flex items-center justify-between border-b border-emerald-500/30">
             <div class="flex items-center gap-4">
@@ -80,9 +84,9 @@
         <div id="chat-window" class="flex-1 p-6 overflow-y-auto space-y-6">
             <div class="flex justify-start">
                 <div class="message-bubble bg-slate-800 text-slate-300 p-4 rounded-2xl rounded-tl-none border border-slate-700 shadow-lg">
-                    Hello! I am the official TechGrid Systems AI assistant. I have real-time access to our website and documentation at techgrid-systems.org.uk. 
+                    Hello! I am the official TechGrid Systems AI assistant. I am linked directly to techgrid-systems.org.uk to provide you with accurate information.
                     <br><br>
-                    How can I assist you with our infrastructure or services today?
+                    What would you like to know about our systems or infrastructure?
                 </div>
             </div>
         </div>
@@ -91,7 +95,7 @@
         <div class="p-6 bg-slate-900/50 border-t border-slate-800">
             <div class="relative flex items-center">
                 <input type="text" id="user-input" 
-                    placeholder="Ask about our architecture, services, or documentation..." 
+                    placeholder="Search TechGrid documentation..." 
                     class="w-full bg-slate-800 border border-slate-700 rounded-2xl pl-5 pr-14 py-4 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all placeholder:text-slate-500">
                 <button id="send-btn" class="absolute right-2 bg-emerald-600 hover:bg-emerald-500 text-white p-2.5 rounded-xl transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -99,7 +103,7 @@
                     </svg>
                 </button>
             </div>
-            <p class="text-[10px] text-slate-500 mt-3 text-center">AI responses are grounded in official site content.</p>
+            <p class="text-[10px] text-slate-500 mt-3 text-center">Responses are verified against official site content.</p>
         </div>
     </div>
 
@@ -110,14 +114,15 @@
         const sendBtn = document.getElementById('send-btn');
 
         const SYSTEM_PROMPT = `You are the TechGrid Systems Expert Bot. 
-        Your primary source of truth is the website: https://www.techgrid-systems.org.uk and its subpages.
-        When answering:
-        1. Be technical, professional, and helpful.
-        2. Focus specifically on information found on the TechGrid domain.
-        3. If the user asks about something not on the site, politely explain that you specialize in TechGrid Systems information.
-        4. Keep responses concise but comprehensive.`;
+        Your primary source of truth is the website: https://www.techgrid-systems.org.uk and all its subpages.
+        Instructions:
+        1. Only provide information related to TechGrid Systems found on their domain.
+        2. If specific technical data is available on the site, prioritize that.
+        3. Use a helpful, professional tone.
+        4. If you cannot find specific info on the domain, suggest contacting their support via the site.`;
 
         async function callGemini(query, retries = 5) {
+            // Using the current preview model specified in instructions
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
             
             const payload = {
@@ -134,10 +139,12 @@
                         body: JSON.stringify(payload)
                     });
 
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
+                    }
                     
-                    const data = await response.json();
-                    return data;
+                    return await response.json();
                 } catch (error) {
                     if (i === retries - 1) throw error;
                     const delay = Math.pow(2, i) * 1000;
@@ -157,23 +164,36 @@
                 : 'bg-slate-800 text-slate-200 rounded-tl-none border-slate-700'
             }`;
             
-            // Basic formatting for markdown-style newlines
-            const formattedText = text.replace(/\n/g, '<br>');
-            bubble.innerHTML = `<div>${formattedText}</div>`;
+            const contentDiv = document.createElement('div');
+            contentDiv.className = "markdown-content";
+            
+            // Simple Markdown-like formatting
+            const formattedText = text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>');
+            
+            contentDiv.innerHTML = `<p>${formattedText}</p>`;
+            bubble.appendChild(contentDiv);
             
             if (sources.length > 0) {
                 const sourceContainer = document.createElement('div');
-                sourceContainer.className = "mt-3 pt-3 border-t border-slate-700/50";
-                sources.forEach(src => {
-                    if (src.uri && src.uri.includes('techgrid-systems.org.uk')) {
-                        const link = document.createElement('a');
-                        link.href = src.uri;
-                        link.target = "_blank";
-                        link.className = "source-link";
-                        link.innerText = src.title || 'Source';
-                        sourceContainer.appendChild(link);
-                    }
+                sourceContainer.className = "mt-4 pt-3 border-t border-slate-700/50 flex flex-wrap gap-2";
+                
+                // Filter and unique sources
+                const uniqueSources = Array.from(new Set(sources.map(s => s.uri)))
+                    .map(uri => sources.find(s => s.uri === uri))
+                    .filter(src => src.uri && (src.uri.includes('techgrid-systems.org.uk') || src.uri.includes('github.com/techgrid-systems')));
+
+                uniqueSources.forEach(src => {
+                    const link = document.createElement('a');
+                    link.href = src.uri;
+                    link.target = "_blank";
+                    link.className = "source-link";
+                    link.innerHTML = `<span class="opacity-70">🔗</span> ${src.title || 'TechGrid Source'}`;
+                    sourceContainer.appendChild(link);
                 });
+
                 if (sourceContainer.children.length > 0) {
                     bubble.appendChild(sourceContainer);
                 }
@@ -200,21 +220,19 @@
             const text = userInput.value.trim();
             if (!text || sendBtn.disabled) return;
 
-            // Update UI
             appendMessage('user', text);
             userInput.value = '';
-            userInput.focus();
             sendBtn.disabled = true;
             const indicator = showTypingIndicator();
 
-            // Targeted query to ensure grounding focused on the domain
-            const focusedQuery = `Search the website https://www.techgrid-systems.org.uk and answer this: ${text}`;
+            // Refined query to force browsing subpages
+            const focusedQuery = `Using information from the website https://www.techgrid-systems.org.uk and its internal pages, answer: ${text}`;
 
             try {
                 const result = await callGemini(focusedQuery);
                 indicator.remove();
 
-                const responseText = result.candidates?.[0]?.content?.parts?.[0]?.text || "I'm sorry, I couldn't retrieve that information right now.";
+                const responseText = result.candidates?.[0]?.content?.parts?.[0]?.text || "I was unable to find that information on techgrid-systems.org.uk.";
                 const attributions = result.candidates?.[0]?.groundingMetadata?.groundingAttributions || [];
                 
                 const sources = attributions.map(a => ({
@@ -225,10 +243,11 @@
                 appendMessage('bot', responseText, sources);
             } catch (error) {
                 indicator.remove();
-                appendMessage('bot', "I encountered an error connecting to the TechGrid knowledge base. Please try again in a moment.");
-                console.error(error);
+                appendMessage('bot', `**Connection Error:** ${error.message}. Please check your connection and try again.`);
+                console.error("Gemini API Error:", error);
             } finally {
                 sendBtn.disabled = false;
+                userInput.focus();
             }
         }
 
