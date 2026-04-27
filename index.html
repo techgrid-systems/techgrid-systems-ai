@@ -54,9 +54,12 @@
             border: 1px solid transparent;
         }
         .btn-yes { background: #2563eb; color: white; }
-        .btn-yes:hover { background: #1d4ed8; }
+        .btn-yes:not(:disabled):hover { background: #1d4ed8; }
         .btn-no { background: #f1f5f9; color: #475569; border-color: #e2e8f0; }
-        .btn-no:hover { background: #e2e8f0; }
+        .btn-no:not(:disabled):hover { background: #e2e8f0; }
+        
+        .btn-selected { outline: 3px solid #93c5fd; transform: scale(0.98); opacity: 0.8; }
+        
         .btn-end { background: #dc2626; color: white; width: 100%; margin-top: 8px; }
         .btn-end:hover { background: #b91c1c; }
 
@@ -67,20 +70,53 @@
             background: #e2e8f0;
             border-radius: 10px;
         }
+
+        /* Dropdown Styles */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 1rem;
+            top: 3.5rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+            width: 180px;
+        }
+        .dropdown-menu.show { display: block; }
     </style>
 </head>
 <body class="bg-slate-100 h-screen flex items-center justify-center p-4 font-sans text-slate-800">
 
-    <div class="w-full max-w-md h-[600px] bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-slate-200">
+    <div class="w-full max-w-md h-[600px] bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-slate-200 relative">
         <!-- Header -->
-        <div class="bg-blue-600 p-4 flex items-center gap-3 border-b border-blue-700 shadow-md">
-            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-inner overflow-hidden">
-                <img src="https://techgrid-systems.github.io/techgrid-systems-logo/tgs.jpg" alt="Logo" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-blue-600 font-bold\'>T</span>'">
+        <div class="bg-blue-600 p-4 flex items-center justify-between border-b border-blue-700 shadow-md">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-inner overflow-hidden">
+                    <img src="https://techgrid-systems.github.io/techgrid-systems-logo/tgs.jpg" alt="Logo" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-blue-600 font-bold\'>T</span>'">
+                </div>
+                <div>
+                    <h1 class="text-white font-bold text-lg leading-tight">Techgrid Systems Bot</h1>
+                    <p class="text-blue-100 text-xs">Techgrid Systems AI System</p>
+                </div>
             </div>
-            <div>
-                <h1 class="text-white font-bold text-lg">Techgrid Systems Bot</h1>
-                <p class="text-blue-100 text-xs">Techgrid Systems AI System</p>
-            </div>
+            <!-- Menu Toggle -->
+            <button id="menu-btn" class="text-white hover:bg-blue-500 p-2 rounded-full transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Export Dropdown -->
+        <div id="dropdown" class="dropdown-menu">
+            <button id="export-btn" class="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2 rounded-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Download Chat (.txt)
+            </button>
         </div>
 
         <!-- Chat Window -->
@@ -111,6 +147,10 @@
     </div>
 
     <script>
+        const chatHistory = [
+            { role: "Bot", text: "Hello! I am Nexsis your friendly AI, its nice to chat with you. I am here to help you find your way and get you the information you may need. How may I assist you today?" }
+        ];
+
         const TECHGRID_DATA = [
             {
                 keywords: ["what is", "do", "about"],
@@ -136,8 +176,39 @@
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
         const inputContainer = document.getElementById('input-container');
+        const menuBtn = document.getElementById('menu-btn');
+        const dropdown = document.getElementById('dropdown');
+        const exportBtn = document.getElementById('export-btn');
+
+        // Toggle Menu
+        menuBtn.addEventListener('click', () => dropdown.classList.toggle('show'));
+        window.addEventListener('click', (e) => {
+            if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.remove('show');
+        });
+
+        // Export Functionality
+        exportBtn.addEventListener('click', () => {
+            let content = "TECHGRID SYSTEMS CHAT LOG\n";
+            content += "--------------------------\n\n";
+            chatHistory.forEach(msg => {
+                content += `${msg.role}: ${msg.text}\n\n`;
+            });
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'techgrid-systems-chat-export.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            dropdown.classList.remove('show');
+        });
 
         function appendMessage(role, text, link = null) {
+            chatHistory.push({ role: role === 'user' ? 'User' : 'Bot', text: text });
+            
             const wrapper = document.createElement('div');
             wrapper.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
             
@@ -186,15 +257,18 @@
         function askIfFinished() {
             setTimeout(() => {
                 const wrapper = document.createElement('div');
-                wrapper.className = "flex justify-start";
+                wrapper.className = "flex justify-start question-container";
                 const bubble = document.createElement('div');
                 bubble.className = "message-bubble bg-slate-100 text-slate-700 p-4 rounded-2xl rounded-tl-none border border-slate-200 shadow-md w-full";
                 
+                const question = "Are you finished with this inquiry?";
+                chatHistory.push({ role: "Bot", text: question });
+
                 bubble.innerHTML = `
-                    <p class="mb-3 font-medium">Are you finished with this inquiry?</p>
-                    <div class="flex gap-2">
-                        <button onclick="handleFinished(true)" class="action-btn btn-yes flex-1">Yes</button>
-                        <button onclick="handleFinished(false)" class="action-btn btn-no flex-1 shadow-sm">No</button>
+                    <p class="mb-3 font-medium">${question}</p>
+                    <div class="flex gap-2 btn-group">
+                        <button onclick="handleFinished(true, this)" class="action-btn btn-yes flex-1">Yes</button>
+                        <button onclick="handleFinished(false, this)" class="action-btn btn-no flex-1 shadow-sm">No</button>
                     </div>
                 `;
                 
@@ -205,58 +279,79 @@
             }, 1000);
         }
 
-        function handleFinished(isFinished) {
-            const lastBubble = chatWindow.lastElementChild;
-            if (lastBubble) lastBubble.remove();
+        function handleFinished(isFinished, btn) {
+            chatHistory.push({ role: "User Selection", text: isFinished ? "Yes" : "No" });
+            
+            // Highlight selection and disable group
+            const group = btn.closest('.btn-group');
+            Array.from(group.children).forEach(b => {
+                b.disabled = true;
+                b.classList.remove('btn-selected');
+            });
+            btn.classList.add('btn-selected');
 
-            if (isFinished) {
-                // User is finished -> Show End Conversation
-                const wrapper = document.createElement('div');
-                wrapper.className = "flex justify-start";
-                const bubble = document.createElement('div');
-                bubble.className = "message-bubble bg-slate-100 text-slate-700 p-4 rounded-2xl rounded-tl-none border border-slate-200 shadow-md w-full";
-                
-                bubble.innerHTML = `
-                    <p>Thank you for contacting Techgrid Systems.</p>
-                    <button onclick="location.reload()" class="action-btn btn-end shadow-lg">End Conversation</button>
-                `;
-                
-                wrapper.appendChild(bubble);
-                chatWindow.appendChild(wrapper);
-                chatWindow.scrollTop = chatWindow.scrollHeight;
-            } else {
-                // User is NOT finished -> Ask if they have another question
-                const wrapper = document.createElement('div');
-                wrapper.className = "flex justify-start";
-                const bubble = document.createElement('div');
-                bubble.className = "message-bubble bg-slate-100 text-slate-700 p-4 rounded-2xl rounded-tl-none border border-slate-200 shadow-md w-full";
-                
-                bubble.innerHTML = `
-                    <p class="mb-3 font-medium">Do you have another question you would like to ask?</p>
-                    <div class="flex gap-2">
-                        <button onclick="handleAnother(true)" class="action-btn btn-yes flex-1">Yes</button>
-                        <button onclick="handleAnother(false)" class="action-btn btn-no flex-1 shadow-sm">No</button>
-                    </div>
-                `;
-                
-                wrapper.appendChild(bubble);
-                chatWindow.appendChild(wrapper);
-                chatWindow.scrollTop = chatWindow.scrollHeight;
-            }
+            setTimeout(() => {
+                if (isFinished) {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = "flex justify-start";
+                    const bubble = document.createElement('div');
+                    bubble.className = "message-bubble bg-slate-100 text-slate-700 p-4 rounded-2xl rounded-tl-none border border-slate-200 shadow-md w-full";
+                    
+                    const msg = "Thank you for contacting Techgrid Systems.";
+                    chatHistory.push({ role: "Bot", text: msg });
+
+                    bubble.innerHTML = `
+                        <p>${msg}</p>
+                        <button onclick="location.reload()" class="action-btn btn-end shadow-lg">End Conversation</button>
+                    `;
+                    
+                    wrapper.appendChild(bubble);
+                    chatWindow.appendChild(wrapper);
+                    chatWindow.scrollTop = chatWindow.scrollHeight;
+                } else {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = "flex justify-start question-container";
+                    const bubble = document.createElement('div');
+                    bubble.className = "message-bubble bg-slate-100 text-slate-700 p-4 rounded-2xl rounded-tl-none border border-slate-200 shadow-md w-full";
+                    
+                    const question = "Do you have another question you would like to ask?";
+                    chatHistory.push({ role: "Bot", text: question });
+
+                    bubble.innerHTML = `
+                        <p class="mb-3 font-medium">${question}</p>
+                        <div class="flex gap-2 btn-group">
+                            <button onclick="handleAnother(true, this)" class="action-btn btn-yes flex-1">Yes</button>
+                            <button onclick="handleAnother(false, this)" class="action-btn btn-no flex-1 shadow-sm">No</button>
+                        </div>
+                    `;
+                    
+                    wrapper.appendChild(bubble);
+                    chatWindow.appendChild(wrapper);
+                    chatWindow.scrollTop = chatWindow.scrollHeight;
+                }
+            }, 600);
         }
 
-        function handleAnother(wantMore) {
-            const lastBubble = chatWindow.lastElementChild;
-            if (lastBubble) lastBubble.remove();
+        function handleAnother(wantMore, btn) {
+            chatHistory.push({ role: "User Selection", text: wantMore ? "Yes" : "No" });
 
-            if (wantMore) {
-                appendMessage('bot', "Please let me know what other questions you want answering and I will try my best to help you.");
-                toggleInput(true);
-                userInput.focus();
-            } else {
-                appendMessage('bot', "Refreshing conversation...");
-                setTimeout(() => location.reload(), 1500);
-            }
+            const group = btn.closest('.btn-group');
+            Array.from(group.children).forEach(b => {
+                b.disabled = true;
+                b.classList.remove('btn-selected');
+            });
+            btn.classList.add('btn-selected');
+
+            setTimeout(() => {
+                if (wantMore) {
+                    appendMessage('bot', "Please let me know what other questions you want answering and I will try my best to help you.");
+                    toggleInput(true);
+                    userInput.focus();
+                } else {
+                    appendMessage('bot', "Refreshing conversation...");
+                    setTimeout(() => location.reload(), 1500);
+                }
+            }, 600);
         }
 
         function handleChat() {
