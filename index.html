@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechGrid Systems AI Expert</title>
+    <title>TechGrid Systems Expert Bot</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .message-bubble {
@@ -30,22 +30,20 @@
             0%, 80%, 100% { opacity: 0; }
             40% { opacity: 1; }
         }
-        .source-link {
-            display: inline-block;
-            font-size: 0.7rem;
-            padding: 4px 8px;
+        .link-card {
+            display: block;
+            margin-top: 10px;
+            padding: 10px;
             background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 6px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 12px;
             color: #34d399;
-            margin-top: 8px;
-            margin-right: 6px;
-            transition: all 0.2s;
             text-decoration: none;
+            transition: all 0.2s;
         }
-        .source-link:hover {
+        .link-card:hover {
             background: rgba(16, 185, 129, 0.2);
-            border-color: #34d399;
+            transform: translateY(-2px);
         }
         #chat-window::-webkit-scrollbar {
             width: 6px;
@@ -54,149 +52,115 @@
             background: #334155;
             border-radius: 10px;
         }
-        .markdown-content ul { list-style-type: disc; margin-left: 1.5rem; margin-top: 0.5rem; }
-        .markdown-content p { margin-bottom: 0.75rem; }
     </style>
 </head>
 <body class="bg-slate-950 h-screen flex items-center justify-center p-4 font-sans text-slate-200">
 
-    <div class="w-full max-w-2xl h-[85vh] bg-slate-900 rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-slate-800">
+    <div class="w-full max-w-md h-[600px] bg-slate-900 rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-slate-800">
         <!-- Header -->
-        <div class="bg-emerald-600 p-5 flex items-center justify-between border-b border-emerald-500/30">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-inner transform rotate-3">
-                    <span class="text-emerald-600 font-black text-2xl">T</span>
-                </div>
-                <div>
-                    <h1 class="text-white font-bold text-xl tracking-tight">TechGrid AI</h1>
-                    <p class="text-emerald-100/80 text-xs flex items-center gap-1">
-                        <span class="w-2 h-2 bg-emerald-300 rounded-full animate-pulse"></span>
-                        Live Site Intelligence
-                    </p>
-                </div>
+        <div class="bg-emerald-600 p-4 flex items-center gap-3 border-b border-emerald-500">
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg">
+                <span class="text-emerald-600 font-bold text-xl">T</span>
             </div>
-            <div class="text-emerald-100/50 text-[10px] text-right hidden sm:block">
-                Powered by Gemini 2.5 Flash<br>Grounding: techgrid-systems.org.uk
+            <div>
+                <h1 class="text-white font-bold text-lg">TechGrid Expert</h1>
+                <p class="text-emerald-100 text-xs">Manual Knowledge Base Mode</p>
             </div>
         </div>
 
         <!-- Chat Window -->
-        <div id="chat-window" class="flex-1 p-6 overflow-y-auto space-y-6">
+        <div id="chat-window" class="flex-1 p-4 overflow-y-auto space-y-4">
             <div class="flex justify-start">
-                <div class="message-bubble bg-slate-800 text-slate-300 p-4 rounded-2xl rounded-tl-none border border-slate-700 shadow-lg">
-                    Hello! I am the official TechGrid Systems AI assistant. I am linked directly to techgrid-systems.org.uk to provide you with accurate information.
-                    <br><br>
-                    What would you like to know about our systems or infrastructure?
+                <div class="message-bubble bg-slate-800 text-slate-300 p-3 rounded-2xl rounded-tl-none border border-slate-700 shadow-md">
+                    Hello! I'm the manual TechGrid assistant. I can provide direct links and information about our infrastructure, status, and sub-pages.
                 </div>
             </div>
         </div>
 
         <!-- Input Area -->
-        <div class="p-6 bg-slate-900/50 border-t border-slate-800">
-            <div class="relative flex items-center">
+        <div class="p-4 bg-slate-900 border-t border-slate-800">
+            <div class="flex gap-2">
                 <input type="text" id="user-input" 
-                    placeholder="Search TechGrid documentation..." 
-                    class="w-full bg-slate-800 border border-slate-700 rounded-2xl pl-5 pr-14 py-4 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all placeholder:text-slate-500">
-                <button id="send-btn" class="absolute right-2 bg-emerald-600 hover:bg-emerald-500 text-white p-2.5 rounded-xl transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                    placeholder="Search TechGrid sites..." 
+                    class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all">
+                <button id="send-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white p-2 rounded-xl transition-colors shadow-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>
                 </button>
             </div>
-            <p class="text-[10px] text-slate-500 mt-3 text-center">Responses are verified against official site content.</p>
         </div>
     </div>
 
     <script>
-        const apiKey = ""; // Provided by environment
+        // Manual Knowledge Base with explicit URLs for sub-pages
+        const TECHGRID_DATA = [
+            {
+                keywords: ["what is", "do", "about"],
+                response: "TechGrid Systems provides high-performance infrastructure solutions and systematic technical documentation. We specialize in scalable systems architecture and automated deployment workflows.",
+                url: "https://www.techgrid-systems.org.uk/about",
+                linkText: "Learn about TechGrid"
+            },
+            {
+                keywords: ["status", "up", "down", "working"],
+                response: "You can monitor the real-time status of all TechGrid infrastructure components on our dedicated status dashboard.",
+                url: "https://status.techgrid-systems.org.uk",
+                linkText: "View Live Status Page"
+            },
+            {
+                keywords: ["docs", "documentation", "guide", "manual"],
+                response: "Our technical documentation is hosted on our main portal, covering everything from system setup to API references.",
+                url: "https://www.techgrid-systems.org.uk/docs",
+                linkText: "Browse Documentation"
+            },
+            {
+                keywords: ["github", "source", "code", "repo"],
+                response: "We maintain an open-first approach. You can find our public repositories and system configurations on GitHub.",
+                url: "https://github.com/techgrid-systems",
+                linkText: "Visit GitHub Organization"
+            },
+            {
+                keywords: ["contact", "support", "help", "email"],
+                response: "Need direct assistance? You can reach our support team through our contact portal.",
+                url: "https://www.techgrid-systems.org.uk/contact",
+                linkText: "Contact Support"
+            },
+            {
+                keywords: ["infrastructure", "architecture", "stack"],
+                response: "TechGrid's infrastructure is built on modular, scalable principles using modern CI/CD pipelines.",
+                url: "https://www.techgrid-systems.org.uk/infrastructure",
+                linkText: "Architecture Overview"
+            }
+        ];
+
         const chatWindow = document.getElementById('chat-window');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
 
-        const SYSTEM_PROMPT = `You are the TechGrid Systems Expert Bot. 
-        Your primary source of truth is the website: https://www.techgrid-systems.org.uk and all its subpages.
-        Instructions:
-        1. Only provide information related to TechGrid Systems found on their domain.
-        2. If specific technical data is available on the site, prioritize that.
-        3. Use a helpful, professional tone.
-        4. If you cannot find specific info on the domain, suggest contacting their support via the site.`;
-
-        async function callGemini(query, retries = 5) {
-            // Using the current preview model specified in instructions
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            
-            const payload = {
-                contents: [{ parts: [{ text: query }] }],
-                systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-                tools: [{ "google_search": {} }]
-            };
-
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
-                    }
-                    
-                    return await response.json();
-                } catch (error) {
-                    if (i === retries - 1) throw error;
-                    const delay = Math.pow(2, i) * 1000;
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                }
-            }
-        }
-
-        function appendMessage(role, text, sources = []) {
+        function appendMessage(role, text, link = null) {
             const wrapper = document.createElement('div');
             wrapper.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
             
             const bubble = document.createElement('div');
-            bubble.className = `message-bubble p-4 rounded-2xl border shadow-sm ${
+            bubble.className = `message-bubble p-3 rounded-2xl border shadow-md ${
                 role === 'user' 
                 ? 'bg-emerald-600 text-white rounded-tr-none border-emerald-500' 
-                : 'bg-slate-800 text-slate-200 rounded-tl-none border-slate-700'
+                : 'bg-slate-800 text-slate-300 rounded-tl-none border-slate-700'
             }`;
             
-            const contentDiv = document.createElement('div');
-            contentDiv.className = "markdown-content";
-            
-            // Simple Markdown-like formatting
-            const formattedText = text
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\n\n/g, '</p><p>')
-                .replace(/\n/g, '<br>');
-            
-            contentDiv.innerHTML = `<p>${formattedText}</p>`;
-            bubble.appendChild(contentDiv);
-            
-            if (sources.length > 0) {
-                const sourceContainer = document.createElement('div');
-                sourceContainer.className = "mt-4 pt-3 border-t border-slate-700/50 flex flex-wrap gap-2";
-                
-                // Filter and unique sources
-                const uniqueSources = Array.from(new Set(sources.map(s => s.uri)))
-                    .map(uri => sources.find(s => s.uri === uri))
-                    .filter(src => src.uri && (src.uri.includes('techgrid-systems.org.uk') || src.uri.includes('github.com/techgrid-systems')));
+            bubble.innerText = text;
 
-                uniqueSources.forEach(src => {
-                    const link = document.createElement('a');
-                    link.href = src.uri;
-                    link.target = "_blank";
-                    link.className = "source-link";
-                    link.innerHTML = `<span class="opacity-70">🔗</span> ${src.title || 'TechGrid Source'}`;
-                    sourceContainer.appendChild(link);
-                });
-
-                if (sourceContainer.children.length > 0) {
-                    bubble.appendChild(sourceContainer);
-                }
+            if (link) {
+                const linkCard = document.createElement('a');
+                linkCard.href = link.url;
+                linkCard.target = "_blank";
+                linkCard.className = "link-card";
+                linkCard.innerHTML = `
+                    <div class="text-[10px] uppercase tracking-wider opacity-60">Official Link</div>
+                    <div class="font-bold text-sm">${link.text}</div>
+                    <div class="text-[10px] truncate opacity-50">${link.url}</div>
+                `;
+                bubble.appendChild(linkCard);
             }
             
             wrapper.appendChild(bubble);
@@ -208,7 +172,7 @@
             const wrapper = document.createElement('div');
             wrapper.className = "flex justify-start typing-indicator";
             wrapper.innerHTML = `
-                <div class="message-bubble bg-slate-800 p-4 rounded-2xl rounded-tl-none border border-slate-700">
+                <div class="message-bubble bg-slate-800 p-3 rounded-2xl rounded-tl-none border border-slate-700">
                     <div class="typing-dots"><span></span><span></span><span></span></div>
                 </div>`;
             chatWindow.appendChild(wrapper);
@@ -216,39 +180,33 @@
             return wrapper;
         }
 
-        async function handleChat() {
+        function handleChat() {
             const text = userInput.value.trim();
-            if (!text || sendBtn.disabled) return;
+            if (!text) return;
 
             appendMessage('user', text);
             userInput.value = '';
-            sendBtn.disabled = true;
+            
             const indicator = showTypingIndicator();
 
-            // Refined query to force browsing subpages
-            const focusedQuery = `Using information from the website https://www.techgrid-systems.org.uk and its internal pages, answer: ${text}`;
-
-            try {
-                const result = await callGemini(focusedQuery);
+            setTimeout(() => {
                 indicator.remove();
-
-                const responseText = result.candidates?.[0]?.content?.parts?.[0]?.text || "I was unable to find that information on techgrid-systems.org.uk.";
-                const attributions = result.candidates?.[0]?.groundingMetadata?.groundingAttributions || [];
+                const lowerText = text.toLowerCase();
                 
-                const sources = attributions.map(a => ({
-                    uri: a.web?.uri,
-                    title: a.web?.title
-                }));
+                // Find matching entry based on keywords
+                const match = TECHGRID_DATA.find(entry => 
+                    entry.keywords.some(key => lowerText.includes(key))
+                );
 
-                appendMessage('bot', responseText, sources);
-            } catch (error) {
-                indicator.remove();
-                appendMessage('bot', `**Connection Error:** ${error.message}. Please check your connection and try again.`);
-                console.error("Gemini API Error:", error);
-            } finally {
-                sendBtn.disabled = false;
-                userInput.focus();
-            }
+                if (match) {
+                    appendMessage('bot', match.response, { url: match.url, text: match.linkText });
+                } else {
+                    appendMessage('bot', "I'm not sure about that specific detail. You can browse our full sitemap here:", { 
+                        url: "https://www.techgrid-systems.org.uk/sitemap", 
+                        text: "TechGrid Sitemap" 
+                    });
+                }
+            }, 600);
         }
 
         sendBtn.addEventListener('click', handleChat);
