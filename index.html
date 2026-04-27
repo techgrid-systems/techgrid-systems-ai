@@ -195,8 +195,9 @@
     </footer>
 
     <script>
+        // Updated chatHistory logic to store associated links for each message
         const chatHistory = [
-            { role: "Bot", text: "Hello! I am Nexsis your friendly AI, its nice to chat with you. I am here to help you find your way and get you the information you may need. How may I assist you today?" }
+            { role: "Bot", text: "Hello! I am Nexsis your friendly AI, its nice to chat with you. I am here to help you find your way and get you the information you may need. How may I assist you today?", links: [] }
         ];
 
         const TECHGRID_DATA = [
@@ -229,10 +230,21 @@
         });
 
         function triggerDownload() {
-            let content = "TECHGRID SYSTEMS CHAT LOG\n--------------------------\n\n";
+            let content = "TECHGRID SYSTEMS CHAT LOG\n";
+            content += "Generated: " + new Date().toLocaleString() + "\n";
+            content += "------------------------------------------\n\n";
+            
             chatHistory.forEach(msg => {
-                content += `${msg.role}: ${msg.text}\n${msg.link ? `Link: ${msg.link.text} (${msg.link.url})\n` : ''}\n`;
+                content += `${msg.role.toUpperCase()}: ${msg.text}\n`;
+                if (msg.links && msg.links.length > 0) {
+                    content += "SUPPLIED LINKS:\n";
+                    msg.links.forEach(l => {
+                        content += ` - ${l.text}: ${l.url}\n`;
+                    });
+                }
+                content += "\n";
             });
+
             const blob = new Blob([content], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -248,7 +260,8 @@
         });
 
         function appendMessage(role, text, type = 'text', data = null) {
-            chatHistory.push({ role: role === 'user' ? 'User' : 'Bot', text: text });
+            // Track links for history
+            let linksForHistory = [];
             
             const wrapper = document.createElement('div');
             wrapper.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
@@ -259,6 +272,12 @@
             }`;
             
             if (type === 'contact') {
+                linksForHistory = [
+                    { text: "Email", url: "info@techgrid-systems.org.uk" },
+                    { text: "Phone", url: "07487613849" },
+                    { text: "WhatsApp", url: "https://wa.me/447847613849" },
+                    { text: "Contact Page", url: "https://www.techgrid-systems.org.uk/contact" }
+                ];
                 bubble.innerHTML = `
                     <p class="font-bold mb-3">${text}</p>
                     <a href="mailto:info@techgrid-systems.org.uk" class="contact-item">
@@ -279,6 +298,7 @@
                     </a>
                 `;
             } else if (data && data.url) {
+                linksForHistory = [{ text: data.text, url: data.url }];
                 bubble.innerText = text;
                 const linkCard = document.createElement('a');
                 linkCard.href = data.url;
@@ -288,7 +308,10 @@
                 bubble.appendChild(linkCard);
             } else {
                 bubble.innerText = text;
+                // Check if text itself contains an auto-detected link (optional enhancement)
             }
+            
+            chatHistory.push({ role: role === 'user' ? 'User' : 'Bot', text: text, links: linksForHistory });
             
             wrapper.appendChild(bubble);
             chatInner.appendChild(wrapper);
@@ -339,6 +362,10 @@
             btn.classList.add('btn-selected');
             status.innerText = "Answer = " + val;
             status.classList.remove('hidden');
+            
+            chatHistory.push({ role: "Bot", text: "Are you finished with this inquiry?", links: [] });
+            chatHistory.push({ role: "User", text: val, links: [] });
+
             setTimeout(() => {
                 if (isFinished) askForExport();
                 else askForAnother();
@@ -365,7 +392,6 @@
         }
 
         function handleExportChoice(wantCopy, btn) {
-            if (wantCopy) triggerDownload();
             const bubble = btn.closest('.message-bubble');
             const group = btn.closest('.btn-group');
             const status = bubble.querySelector('.selection-status');
@@ -373,6 +399,12 @@
             btn.classList.add('btn-selected');
             status.innerText = "Answer = " + (wantCopy ? "Yes" : "No");
             status.classList.remove('hidden');
+
+            chatHistory.push({ role: "Bot", text: "Do you want a copy of this chat?", links: [] });
+            chatHistory.push({ role: "User", text: wantCopy ? "Yes" : "No", links: [] });
+
+            if (wantCopy) triggerDownload();
+
             setTimeout(() => {
                 const wrapper = document.createElement('div');
                 wrapper.className = "flex justify-start";
@@ -412,6 +444,10 @@
             btn.classList.add('btn-selected');
             status.innerText = "Answer = " + (wantMore ? "Yes" : "No");
             status.classList.remove('hidden');
+
+            chatHistory.push({ role: "Bot", text: "Do you have another question?", links: [] });
+            chatHistory.push({ role: "User", text: wantMore ? "Yes" : "No", links: [] });
+
             setTimeout(() => {
                 if (wantMore) {
                     appendMessage('bot', "Please let me know what other questions you have.");
