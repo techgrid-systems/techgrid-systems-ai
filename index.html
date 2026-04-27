@@ -108,7 +108,7 @@
         </div>
 
         <div id="dropdown" class="dropdown-menu">
-            <button id="export-btn" class="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2 rounded-xl">
+            <button id="manual-export-btn" class="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2 rounded-xl">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
@@ -175,14 +175,14 @@
         const inputContainer = document.getElementById('input-container');
         const menuBtn = document.getElementById('menu-btn');
         const dropdown = document.getElementById('dropdown');
-        const exportBtn = document.getElementById('export-btn');
+        const manualExportBtn = document.getElementById('manual-export-btn');
 
         menuBtn.addEventListener('click', () => dropdown.classList.toggle('show'));
         window.addEventListener('click', (e) => {
             if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.remove('show');
         });
 
-        exportBtn.addEventListener('click', () => {
+        function triggerDownload() {
             let content = "TECHGRID SYSTEMS CHAT LOG\n";
             content += "--------------------------\n\n";
             chatHistory.forEach(msg => {
@@ -197,11 +197,15 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'TGS-Retain-Chat-Data.txt';
+            a.download = 'techgrid-systems-chat-export.txt';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+        }
+
+        manualExportBtn.addEventListener('click', () => {
+            triggerDownload();
             dropdown.classList.remove('show');
         });
 
@@ -293,28 +297,12 @@
             });
             btn.classList.add('btn-selected');
             
-            // Show selection text in UI
             status.innerText = "Answer = " + val;
             status.classList.remove('hidden');
 
             setTimeout(() => {
                 if (isFinished) {
-                    const wrapper = document.createElement('div');
-                    wrapper.className = "flex justify-start";
-                    const bubbleEnd = document.createElement('div');
-                    bubbleEnd.className = "message-bubble bg-slate-100 text-slate-700 p-4 rounded-2xl rounded-tl-none border border-slate-200 shadow-md w-full";
-                    
-                    const msg = "Thank you for contacting Techgrid Systems.";
-                    chatHistory.push({ role: "Bot", text: msg });
-
-                    bubbleEnd.innerHTML = `
-                        <p>${msg}</p>
-                        <button onclick="location.reload()" class="action-btn btn-end shadow-lg">End Conversation</button>
-                    `;
-                    
-                    wrapper.appendChild(bubbleEnd);
-                    chatWindow.appendChild(wrapper);
-                    chatWindow.scrollTop = chatWindow.scrollHeight;
+                    askForExport();
                 } else {
                     const wrapper = document.createElement('div');
                     wrapper.className = "flex justify-start question-container";
@@ -337,6 +325,70 @@
                     chatWindow.appendChild(wrapper);
                     chatWindow.scrollTop = chatWindow.scrollHeight;
                 }
+            }, 600);
+        }
+
+        function askForExport() {
+            const wrapper = document.createElement('div');
+            wrapper.className = "flex justify-start question-container";
+            const bubble = document.createElement('div');
+            bubble.className = "message-bubble bg-slate-100 text-slate-700 p-4 rounded-2xl rounded-tl-none border border-slate-200 shadow-md w-full";
+            
+            const question = "Do you want a copy of this chat?";
+            chatHistory.push({ role: "Bot", text: question });
+
+            bubble.innerHTML = `
+                <p class="mb-3 font-medium">${question}</p>
+                <div class="flex gap-2 btn-group">
+                    <button onclick="handleExportChoice(true, this)" class="action-btn btn-yes flex-1">Yes</button>
+                    <button onclick="handleExportChoice(false, this)" class="action-btn btn-no flex-1 shadow-sm">No</button>
+                </div>
+                <div class="selection-status mt-2 text-xs font-bold text-blue-600 hidden"></div>
+            `;
+            
+            wrapper.appendChild(bubble);
+            chatWindow.appendChild(wrapper);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function handleExportChoice(wantCopy, btn) {
+            const val = wantCopy ? "Yes" : "No";
+            chatHistory.push({ role: "User Selection", text: val });
+
+            const bubble = btn.closest('.message-bubble');
+            const group = btn.closest('.btn-group');
+            const status = bubble.querySelector('.selection-status');
+            
+            Array.from(group.children).forEach(b => {
+                b.disabled = true;
+                b.style.opacity = "0.5";
+            });
+            btn.classList.add('btn-selected');
+
+            status.innerText = "Answer = " + val;
+            status.classList.remove('hidden');
+
+            if (wantCopy) {
+                triggerDownload();
+            }
+
+            setTimeout(() => {
+                const wrapper = document.createElement('div');
+                wrapper.className = "flex justify-start";
+                const bubbleEnd = document.createElement('div');
+                bubbleEnd.className = "message-bubble bg-slate-100 text-slate-700 p-4 rounded-2xl rounded-tl-none border border-slate-200 shadow-md w-full";
+                
+                const msg = "Thank you for contacting Techgrid Systems.";
+                chatHistory.push({ role: "Bot", text: msg });
+
+                bubbleEnd.innerHTML = `
+                    <p>${msg}</p>
+                    <button onclick="location.reload()" class="action-btn btn-end shadow-lg">End Conversation</button>
+                `;
+                
+                wrapper.appendChild(bubbleEnd);
+                chatWindow.appendChild(wrapper);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
             }, 600);
         }
 
