@@ -6,10 +6,21 @@
     <title>Techgrid Systems Bot</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
         .message-bubble {
-            max-width: 85%;
+            max-width: 90%; /* Mobile default */
             animation: fadeIn 0.3s ease-out;
             line-height: 1.5;
+        }
+        @media (min-width: 768px) {
+            .message-bubble {
+                max-width: 75%; /* Desktop constraint */
+            }
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -33,7 +44,7 @@
         .link-card {
             display: block;
             margin-top: 10px;
-            padding: 10px;
+            padding: 12px;
             background: rgba(37, 99, 235, 0.05);
             border: 1px solid rgba(37, 99, 235, 0.2);
             border-radius: 12px;
@@ -46,12 +57,13 @@
             transform: translateY(-2px);
         }
         .action-btn {
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 12px 20px;
+            border-radius: 12px;
             font-weight: 600;
             transition: all 0.2s;
             cursor: pointer;
             border: 1px solid transparent;
+            touch-action: manipulation;
         }
         .btn-yes { background: #2563eb; color: white; }
         .btn-yes:not(:disabled):hover { background: #1d4ed8; }
@@ -60,14 +72,14 @@
         
         .btn-selected { outline: 2px solid #2563eb; opacity: 1 !important; transform: scale(0.98); }
         
-        .btn-end { background: #dc2626; color: white; width: 100%; margin-top: 8px; }
+        .btn-end { background: #dc2626; color: white; width: 100%; margin-top: 12px; }
         .btn-end:hover { background: #b91c1c; }
 
         #chat-window::-webkit-scrollbar {
             width: 6px;
         }
         #chat-window::-webkit-scrollbar-thumb {
-            background: #e2e8f0;
+            background: #cbd5e1;
             border-radius: 10px;
         }
 
@@ -75,51 +87,60 @@
             display: none;
             position: absolute;
             right: 1rem;
-            top: 3.5rem;
+            top: 4rem;
             background: white;
             border: 1px solid #e2e8f0;
             border-radius: 12px;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             z-index: 50;
-            width: 180px;
+            width: 220px;
         }
         .dropdown-menu.show { display: block; }
+        
+        .content-width {
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
     </style>
 </head>
-<body class="bg-slate-100 h-screen flex items-center justify-center p-4 font-sans text-slate-800">
+<body class="bg-slate-50 flex flex-col h-screen font-sans text-slate-800">
 
-    <div class="w-full max-w-md h-[600px] bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-slate-200 relative">
-        <!-- Header -->
-        <div class="bg-blue-600 p-4 flex items-center justify-between border-b border-blue-700 shadow-md">
+    <!-- Header -->
+    <header class="bg-blue-600 border-b border-blue-700 shadow-md h-16 flex-shrink-0">
+        <div class="content-width h-full px-4 md:px-6 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-inner overflow-hidden">
+                <div class="w-9 h-9 md:w-10 md:h-10 bg-white rounded-full flex items-center justify-center shadow-inner overflow-hidden flex-shrink-0">
                     <img src="https://techgrid-systems.github.io/techgrid-systems-logo/tgs.jpg" alt="Logo" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-blue-600 font-bold\'>T</span>'">
                 </div>
-                <div>
-                    <h1 class="text-white font-bold text-lg leading-tight">Techgrid Systems Bot</h1>
-                    <p class="text-blue-100 text-xs">Techgrid Systems AI System</p>
+                <div class="min-w-0">
+                    <h1 class="text-white font-bold text-base md:text-xl leading-tight truncate">Techgrid Systems Bot</h1>
+                    <p class="text-blue-100 text-[10px] md:text-xs opacity-80 truncate">Techgrid Systems AI System</p>
                 </div>
             </div>
-            <button id="menu-btn" class="text-white hover:bg-blue-500 p-2 rounded-full transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                </svg>
-            </button>
+            <div class="relative">
+                <button id="menu-btn" class="text-white hover:bg-blue-500 p-2 rounded-full transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                    </svg>
+                </button>
+                <div id="dropdown" class="dropdown-menu">
+                    <button id="manual-export-btn" class="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2 rounded-xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Download Chat (.txt)
+                    </button>
+                </div>
+            </div>
         </div>
+    </header>
 
-        <div id="dropdown" class="dropdown-menu">
-            <button id="manual-export-btn" class="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2 rounded-xl">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Download Chat
-            </button>
-        </div>
-
-        <!-- Chat Window -->
-        <div id="chat-window" class="flex-1 p-4 overflow-y-auto space-y-4 bg-white">
+    <!-- Chat Window -->
+    <main id="chat-window" class="flex-1 overflow-y-auto bg-white">
+        <div id="chat-inner" class="content-width p-4 md:p-6 space-y-4 md:space-y-6">
             <div class="flex justify-start">
-                <div class="message-bubble bg-slate-100 text-slate-700 p-3 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm">
+                <div class="message-bubble bg-slate-100 text-slate-700 p-4 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm text-sm md:text-base">
                    Hello! I am Nexsis your friendly AI, its nice to chat with you. I am here to help you find your way and get you the information you may need. 
                    <br> 
                    <br>
@@ -127,21 +148,23 @@
                 </div>
             </div>
         </div>
+    </main>
 
-        <!-- Input Area -->
-        <div id="input-container" class="p-4 bg-slate-50 border-t border-slate-200">
-            <div class="flex gap-2">
+    <!-- Input Area -->
+    <footer id="input-container" class="bg-slate-50 border-t border-slate-200 p-4 md:p-6 flex-shrink-0">
+        <div class="content-width">
+            <div class="flex gap-2 md:gap-3 items-center">
                 <input type="text" id="user-input" 
-                    placeholder="Please type your message here...." 
-                    class="flex-1 bg-white border border-slate-300 rounded-xl px-4 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm">
-                <button id="send-btn" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl transition-colors shadow-lg active:scale-95">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    placeholder="Type here..." 
+                    class="flex-1 bg-white border border-slate-300 rounded-xl md:rounded-2xl px-4 md:px-6 py-3 md:py-4 text-base md:text-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm">
+                <button id="send-btn" class="bg-blue-600 hover:bg-blue-700 text-white p-3 md:p-4 rounded-xl md:rounded-2xl transition-colors shadow-lg active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 md:h-7 md:w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>
                 </button>
             </div>
         </div>
-    </div>
+    </footer>
 
     <script>
         const chatHistory = [
@@ -151,25 +174,20 @@
         const TECHGRID_DATA = [
             {
                 keywords: ["what is", "do", "about"],
-                response: "Techgrid Systems provides high-performance infrastructure solutions and systematic technical documentation. We specialize in scalable systems architecture.",
+                response: "Techgrid Systems provides high-performance infrastructure solutions and systematic technical documentation.",
                 url: "https://www.techgrid-systems.org.uk/about",
                 linkText: "Learn about Techgrid"
             },
             {
                 keywords: ["status", "up", "down", "working"],
-                response: "You can monitor the real-time status of all Techgrid infrastructure components on our status dashboard.",
+                response: "You can monitor the real-time status of all Techgrid infrastructure components.",
                 url: "https://status.techgrid-systems.org.uk",
                 linkText: "View Live Status Page"
-            },
-            {
-                keywords: ["docs", "documentation", "guide", "manual"],
-                response: "Our technical documentation covers system setup and API references.",
-                url: "https://www.techgrid-systems.org.uk/docs",
-                linkText: "Browse Documentation"
             }
         ];
 
         const chatWindow = document.getElementById('chat-window');
+        const chatInner = document.getElementById('chat-inner');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
         const inputContainer = document.getElementById('input-container');
@@ -183,24 +201,16 @@
         });
 
         function triggerDownload() {
-            let content = "TECHGRID SYSTEMS CHAT LOG\n";
-            content += "--------------------------\n\n";
+            let content = "TECHGRID SYSTEMS CHAT LOG\n--------------------------\n\n";
             chatHistory.forEach(msg => {
-                content += `${msg.role}: ${msg.text}\n`;
-                if (msg.link) {
-                    content += `Link: ${msg.link.text} (${msg.link.url})\n`;
-                }
-                content += `\n`;
+                content += `${msg.role}: ${msg.text}\n${msg.link ? `Link: ${msg.link.text} (${msg.link.url})\n` : ''}\n`;
             });
-
             const blob = new Blob([content], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'techgrid-systems-chat-export.txt';
-            document.body.appendChild(a);
+            a.download = 'TGS-Retain-Chat-Data.txt';
             a.click();
-            document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
 
@@ -211,45 +221,32 @@
 
         function appendMessage(role, text, link = null) {
             chatHistory.push({ role: role === 'user' ? 'User' : 'Bot', text: text, link: link });
-            
             const wrapper = document.createElement('div');
             wrapper.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
-            
             const bubble = document.createElement('div');
-            bubble.className = `message-bubble p-3 rounded-2xl border shadow-sm ${
-                role === 'user' 
-                ? 'bg-blue-600 text-white rounded-tr-none border-blue-500' 
-                : 'bg-slate-100 text-slate-700 rounded-tl-none border-slate-200'
+            bubble.className = `message-bubble p-4 rounded-2xl border shadow-sm text-sm md:text-base ${
+                role === 'user' ? 'bg-blue-600 text-white rounded-tr-none border-blue-500' : 'bg-slate-100 text-slate-700 rounded-tl-none border-slate-200'
             }`;
-            
             bubble.innerText = text;
-
             if (link) {
                 const linkCard = document.createElement('a');
                 linkCard.href = link.url;
                 linkCard.target = "_blank";
                 linkCard.className = "link-card";
-                linkCard.innerHTML = `
-                    <div class="font-bold text-sm">${link.text}</div>
-                    <div class="text-[10px] truncate opacity-60">${link.url}</div>
-                `;
+                linkCard.innerHTML = `<div class="font-bold text-sm md:text-base">${link.text}</div><div class="text-[10px] md:text-xs truncate opacity-70">${link.url}</div>`;
                 bubble.appendChild(linkCard);
             }
-            
             wrapper.appendChild(bubble);
-            chatWindow.appendChild(wrapper);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
+            chatInner.appendChild(wrapper);
+            chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
         }
 
         function showTypingIndicator() {
             const wrapper = document.createElement('div');
             wrapper.className = "flex justify-start typing-indicator";
-            wrapper.innerHTML = `
-                <div class="message-bubble bg-slate-100 p-3 rounded-2xl rounded-tl-none border border-slate-200">
-                    <div class="typing-dots"><span></span><span></span><span></span></div>
-                </div>`;
-            chatWindow.appendChild(wrapper);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
+            wrapper.innerHTML = `<div class="message-bubble bg-slate-100 p-4 rounded-2xl rounded-tl-none border border-slate-200"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+            chatInner.appendChild(wrapper);
+            chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
             return wrapper;
         }
 
@@ -262,69 +259,36 @@
                 const wrapper = document.createElement('div');
                 wrapper.className = "flex justify-start question-container";
                 const bubble = document.createElement('div');
-                bubble.className = "message-bubble bg-slate-100 text-slate-700 p-4 rounded-2xl rounded-tl-none border border-slate-200 shadow-md w-full";
-                
+                bubble.className = "message-bubble bg-slate-100 text-slate-700 p-5 rounded-2xl rounded-tl-none border border-slate-200 shadow-md w-full max-w-lg";
                 const question = "Are you finished with this inquiry?";
                 chatHistory.push({ role: "Bot", text: question });
-
                 bubble.innerHTML = `
-                    <p class="mb-3 font-medium">${question}</p>
-                    <div class="flex gap-2 btn-group">
+                    <p class="mb-4 text-base md:text-lg font-medium">${question}</p>
+                    <div class="flex gap-3 btn-group">
                         <button onclick="handleFinished(true, this)" class="action-btn btn-yes flex-1">Yes</button>
                         <button onclick="handleFinished(false, this)" class="action-btn btn-no flex-1 shadow-sm">No</button>
                     </div>
-                    <div class="selection-status mt-2 text-xs font-bold text-blue-600 hidden"></div>
+                    <div class="selection-status mt-3 text-xs font-bold text-blue-600 hidden"></div>
                 `;
-                
                 wrapper.appendChild(bubble);
-                chatWindow.appendChild(wrapper);
-                chatWindow.scrollTop = chatWindow.scrollHeight;
+                chatInner.appendChild(wrapper);
+                chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
                 toggleInput(false);
             }, 1000);
         }
 
         function handleFinished(isFinished, btn) {
             const val = isFinished ? "Yes" : "No";
-            chatHistory.push({ role: "User Selection", text: val });
-            
             const bubble = btn.closest('.message-bubble');
             const group = btn.closest('.btn-group');
             const status = bubble.querySelector('.selection-status');
-            
-            Array.from(group.children).forEach(b => {
-                b.disabled = true;
-                b.style.opacity = "0.5";
-            });
+            Array.from(group.children).forEach(b => { b.disabled = true; b.style.opacity = "0.5"; });
             btn.classList.add('btn-selected');
-            
             status.innerText = "Answer = " + val;
             status.classList.remove('hidden');
-
             setTimeout(() => {
-                if (isFinished) {
-                    askForExport();
-                } else {
-                    const wrapper = document.createElement('div');
-                    wrapper.className = "flex justify-start question-container";
-                    const bubbleAnother = document.createElement('div');
-                    bubbleAnother.className = "message-bubble bg-slate-100 text-slate-700 p-4 rounded-2xl rounded-tl-none border border-slate-200 shadow-md w-full";
-                    
-                    const question = "Do you have another question you would like to ask?";
-                    chatHistory.push({ role: "Bot", text: question });
-
-                    bubbleAnother.innerHTML = `
-                        <p class="mb-3 font-medium">${question}</p>
-                        <div class="flex gap-2 btn-group">
-                            <button onclick="handleAnother(true, this)" class="action-btn btn-yes flex-1">Yes</button>
-                            <button onclick="handleAnother(false, this)" class="action-btn btn-no flex-1 shadow-sm">No</button>
-                        </div>
-                        <div class="selection-status mt-2 text-xs font-bold text-blue-600 hidden"></div>
-                    `;
-                    
-                    wrapper.appendChild(bubbleAnother);
-                    chatWindow.appendChild(wrapper);
-                    chatWindow.scrollTop = chatWindow.scrollHeight;
-                }
+                if (isFinished) askForExport();
+                else askForAnother();
             }, 600);
         }
 
@@ -332,91 +296,76 @@
             const wrapper = document.createElement('div');
             wrapper.className = "flex justify-start question-container";
             const bubble = document.createElement('div');
-            bubble.className = "message-bubble bg-slate-100 text-slate-700 p-4 rounded-2xl rounded-tl-none border border-slate-200 shadow-md w-full";
-            
+            bubble.className = "message-bubble bg-slate-100 text-slate-700 p-5 rounded-2xl rounded-tl-none border border-slate-200 shadow-md w-full max-w-lg";
             const question = "Do you want a copy of this chat?";
-            chatHistory.push({ role: "Bot", text: question });
-
             bubble.innerHTML = `
-                <p class="mb-3 font-medium">${question}</p>
-                <div class="flex gap-2 btn-group">
+                <p class="mb-4 text-base md:text-lg font-medium">${question}</p>
+                <div class="flex gap-3 btn-group">
                     <button onclick="handleExportChoice(true, this)" class="action-btn btn-yes flex-1">Yes</button>
                     <button onclick="handleExportChoice(false, this)" class="action-btn btn-no flex-1 shadow-sm">No</button>
                 </div>
-                <div class="selection-status mt-2 text-xs font-bold text-blue-600 hidden"></div>
+                <div class="selection-status mt-3 text-xs font-bold text-blue-600 hidden"></div>
             `;
-            
             wrapper.appendChild(bubble);
-            chatWindow.appendChild(wrapper);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
+            chatInner.appendChild(wrapper);
+            chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
         }
 
         function handleExportChoice(wantCopy, btn) {
-            const val = wantCopy ? "Yes" : "No";
-            chatHistory.push({ role: "User Selection", text: val });
-
+            if (wantCopy) triggerDownload();
             const bubble = btn.closest('.message-bubble');
             const group = btn.closest('.btn-group');
             const status = bubble.querySelector('.selection-status');
-            
-            Array.from(group.children).forEach(b => {
-                b.disabled = true;
-                b.style.opacity = "0.5";
-            });
+            Array.from(group.children).forEach(b => { b.disabled = true; b.style.opacity = "0.5"; });
             btn.classList.add('btn-selected');
-
-            status.innerText = "Answer = " + val;
+            status.innerText = "Answer = " + (wantCopy ? "Yes" : "No");
             status.classList.remove('hidden');
-
-            if (wantCopy) {
-                triggerDownload();
-            }
-
             setTimeout(() => {
                 const wrapper = document.createElement('div');
                 wrapper.className = "flex justify-start";
-                const bubbleEnd = document.createElement('div');
-                bubbleEnd.className = "message-bubble bg-slate-100 text-slate-700 p-4 rounded-2xl rounded-tl-none border border-slate-200 shadow-md w-full";
-                
-                const msg = "Thank you for contacting Techgrid Systems.";
-                chatHistory.push({ role: "Bot", text: msg });
-
-                bubbleEnd.innerHTML = `
-                    <p>${msg}</p>
-                    <button onclick="location.reload()" class="action-btn btn-end shadow-lg">End Conversation</button>
-                `;
-                
-                wrapper.appendChild(bubbleEnd);
-                chatWindow.appendChild(wrapper);
-                chatWindow.scrollTop = chatWindow.scrollHeight;
+                const endBubble = document.createElement('div');
+                endBubble.className = "message-bubble bg-slate-100 text-slate-700 p-5 rounded-2xl rounded-tl-none border border-slate-200 shadow-md w-full max-w-lg";
+                endBubble.innerHTML = `<p class="text-base md:text-lg">Thank you for contacting Techgrid Systems.</p><button onclick="location.reload()" class="action-btn btn-end shadow-lg py-4 text-base md:text-lg">End Conversation</button>`;
+                wrapper.appendChild(endBubble);
+                chatInner.appendChild(wrapper);
+                chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
             }, 600);
         }
 
-        function handleAnother(wantMore, btn) {
-            const val = wantMore ? "Yes" : "No";
-            chatHistory.push({ role: "User Selection", text: val });
+        function askForAnother() {
+            const wrapper = document.createElement('div');
+            wrapper.className = "flex justify-start question-container";
+            const bubble = document.createElement('div');
+            bubble.className = "message-bubble bg-slate-100 text-slate-700 p-5 rounded-2xl rounded-tl-none border border-slate-200 shadow-md w-full max-w-lg";
+            const question = "Do you have another question?";
+            bubble.innerHTML = `
+                <p class="mb-4 text-base md:text-lg font-medium">${question}</p>
+                <div class="flex gap-3 btn-group">
+                    <button onclick="handleAnotherChoice(true, this)" class="action-btn btn-yes flex-1">Yes</button>
+                    <button onclick="handleAnotherChoice(false, this)" class="action-btn btn-no flex-1 shadow-sm">No</button>
+                </div>
+                <div class="selection-status mt-3 text-xs font-bold text-blue-600 hidden"></div>
+            `;
+            wrapper.appendChild(bubble);
+            chatInner.appendChild(wrapper);
+            chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
+        }
 
+        function handleAnotherChoice(wantMore, btn) {
             const bubble = btn.closest('.message-bubble');
             const group = btn.closest('.btn-group');
             const status = bubble.querySelector('.selection-status');
-            
-            Array.from(group.children).forEach(b => {
-                b.disabled = true;
-                b.style.opacity = "0.5";
-            });
+            Array.from(group.children).forEach(b => { b.disabled = true; b.style.opacity = "0.5"; });
             btn.classList.add('btn-selected');
-
-            status.innerText = "Answer = " + val;
+            status.innerText = "Answer = " + (wantMore ? "Yes" : "No");
             status.classList.remove('hidden');
-
             setTimeout(() => {
                 if (wantMore) {
-                    appendMessage('bot', "Please let me know what other questions you want answering and I will try my best to help you.");
+                    appendMessage('bot', "Please let me know what other questions you have.");
                     toggleInput(true);
                     userInput.focus();
                 } else {
-                    appendMessage('bot', "Refreshing conversation...");
-                    setTimeout(() => location.reload(), 1500);
+                    location.reload();
                 }
             }, 600);
         }
@@ -424,28 +373,15 @@
         function handleChat() {
             const text = userInput.value.trim();
             if (!text) return;
-
             appendMessage('user', text);
             userInput.value = '';
-            
             const indicator = showTypingIndicator();
-
             setTimeout(() => {
                 indicator.remove();
                 const lowerText = text.toLowerCase();
-                const match = TECHGRID_DATA.find(entry => 
-                    entry.keywords.some(key => lowerText.includes(key))
-                );
-
-                if (match) {
-                    appendMessage('bot', match.response, { url: match.url, text: match.linkText });
-                } else {
-                    appendMessage('bot', "I am not sure about that. You can view our sitemap here:", { 
-                        url: "https://www.techgrid-systems.org.uk/sitemap", 
-                        text: "Techgrid Systems Sitemap" 
-                    });
-                }
-                
+                const match = TECHGRID_DATA.find(entry => entry.keywords.some(key => lowerText.includes(key)));
+                if (match) appendMessage('bot', match.response, { url: match.url, text: match.linkText });
+                else appendMessage('bot', "I am not sure about that. View our sitemap:", { url: "https://www.techgrid-systems.org.uk/sitemap", text: "Sitemap" });
                 askIfFinished();
             }, 800);
         }
