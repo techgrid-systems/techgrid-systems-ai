@@ -1,0 +1,79 @@
+{"metadata": {"organization": "Techgrid Systems","version": "4.2.0","classification": "Enterprise Infrastructure Knowledge Base","lastUpdated": "2026-03-30"},"knowledge": [// ==========================================// SECTION 1: COMPANY OVERVIEW & ABOUT// =========================================={"id": "kb_overview","keywords": ["what is","do","about","techgrid","overview","company"],"title": "Techgrid Systems Enterprise Overview","response": "Techgrid Systems delivers high-performance enterprise infrastructure solutions, fault-tolerant cloud architectures, and systematic technical documentation engineered for scalability, maximum uptime, and robust security.","url": "https://www.techgrid-systems.org.uk/about","linkText": "Explore Enterprise About Portal"},// ==========================================
+// SECTION 2: TELEMETRY & LIVE SYSTEM STATUS
+// ==========================================
+{
+  "id": "kb_status",
+  "keywords": [
+    "status",
+    "up",
+    "down",
+    "working",
+    "monitor",
+    "uptime",
+    "health"
+  ],
+  "title": "Infrastructure Telemetry & Live Status",
+  "response": "Monitor real-time operational status, core service uptime metrics, network latency, and scheduled maintenance windows across all global Techgrid infrastructure clusters.",
+  "url": "https://status.techgrid-systems.org.uk",
+  "linkText": "Access Live Telemetry Status Portal"
+},
+
+// ==========================================
+// SECTION 3: CLOUD & BARE-METAL INFRASTRUCTURE
+// ==========================================
+{
+  "id": "kb_infrastructure",
+  "keywords": [
+    "cloud",
+    "infrastructure",
+    "server",
+    "hosting",
+    "hardware",
+    "compute"
+  ],
+  "title": "High-Performance Bare-Metal & Cloud Infrastructure",
+  "response": "Techgrid provides optimized enterprise bare-metal clusters and virtualized cloud infrastructure engineered for massive throughput, ultra-low latency, and absolute high availability.",
+  "url": "https://www.techgrid-systems.org.uk/infrastructure",
+  "linkText": "View Infrastructure Specifications"
+},
+
+// ==========================================
+// SECTION 4: DOCUMENTATION & TECHNICAL SITEMAP
+// ==========================================
+{
+  "id": "kb_documentation",
+  "keywords": [
+    "documentation",
+    "docs",
+    "manual",
+    "guide",
+    "sitemap",
+    "api"
+  ],
+  "title": "Systematic Technical Documentation & Sitemap",
+  "response": "Access comprehensive infrastructure deployment guides, API reference architectures, and complete system schemas through our structured technical sitemap.",
+  "url": "https://www.techgrid-systems.org.uk/sitemap",
+  "linkText": "Access Technical Documentation Sitemap"
+},
+
+// ==========================================
+// SECTION 5: SUPPORT & ESCALATION CHANNELS
+// ==========================================
+{
+  "id": "kb_contact",
+  "keywords": [
+    "contact",
+    "email",
+    "phone",
+    "whatsapp",
+    "support",
+    "reach",
+    "escalate"
+  ],
+  "title": "Direct Engineering & Escalation Channels",
+  "response": "Connect directly with our 24/7 technical support and senior systems engineering team via direct email, telephone, WhatsApp, or our enterprise contact portal.",
+  "type": "contact",
+  "url": "https://www.techgrid-systems.org.uk/contact",
+  "linkText": "Access Contact Portal"
+}
+]}
