@@ -1,5 +1,3 @@
-const userId = auth.currentUser?.uid || crypto.randomUUID();
--->
 <!DOCTYPE html>
 <html lang="en" class="h-full">
 <head>
@@ -67,7 +65,6 @@ const userId = auth.currentUser?.uid || crypto.randomUUID();
                 </div>
             </div>
 
-            <!-- Clean Segmented Navigation Tabs -->
             <nav class="flex items-center bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 shadow-inner">
                 <button onclick="switchPage('chat')" id="tab-chat" class="px-5 py-2.5 text-xs sm:text-sm font-semibold rounded-xl transition-all flex items-center gap-2 bg-blue-600 text-white shadow-lg shadow-blue-600/20">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
@@ -93,9 +90,7 @@ const userId = auth.currentUser?.uid || crypto.randomUUID();
 
     <main class="flex-1 overflow-hidden relative flex flex-col max-w-7xl mx-auto w-full">
 
-        <!-- VIEW 1: ENTERPRISE AI TERMINAL (CHAT) -->
         <div id="view-chat" class="flex-1 flex flex-col h-full overflow-hidden">
-            <!-- Scrollable Chat Stream -->
             <div id="chat-window" class="flex-1 overflow-y-auto p-4 sm:p-8 space-y-6">
                 <div class="flex justify-start">
                     <div class="max-w-2xl glass-card text-slate-200 p-6 sm:p-7 rounded-3xl rounded-tl-none shadow-2xl text-sm sm:text-base leading-relaxed animate-fade-in border-slate-700/60">
@@ -108,17 +103,15 @@ const userId = auth.currentUser?.uid || crypto.randomUUID();
                         Greetings. I am Nexsis, the enterprise automation and infrastructure intelligence engine for Techgrid Systems. I provide secure guidance across our high-performance cloud clusters, bare-metal infrastructure, live telemetry status, and direct engineering escalation pathways.
                         <div class="mt-5 pt-4 border-t border-slate-700/50 flex flex-wrap gap-2.5">
                             <button onclick="quickPrompt('What cloud infrastructure solutions do you provide?')" class="text-xs bg-slate-800/80 hover:bg-blue-600/20 text-blue-300 hover:text-blue-200 px-4 py-2.5 rounded-xl border border-slate-700/80 transition font-medium flex items-center gap-2 shadow-sm">☁️ Cloud Infrastructure</button>
-                            <button onclick="quickPrompt('Check live system status')" class="text-xs bg-slate-800/80 hover:bg-blue-600/20 text-blue-300 hover:text-blue-200 px-4 py-2.5 rounded-xl border border-slate-700/80 transition font-medium flex items-center gap-2 shadow-sm">⚡ Live Status & Uptime</button>
+                            <button onclick="quickPrompt('What is the status of Techgrid?')" class="text-xs bg-slate-800/80 hover:bg-blue-600/20 text-blue-300 hover:text-blue-200 px-4 py-2.5 rounded-xl border border-slate-700/80 transition font-medium flex items-center gap-2 shadow-sm">⚡ Live Status & Uptime</button>
                             <button onclick="quickPrompt('How can I contact engineering support?')" class="text-xs bg-slate-800/80 hover:bg-blue-600/20 text-blue-300 hover:text-blue-200 px-4 py-2.5 rounded-xl border border-slate-700/80 transition font-medium flex items-center gap-2 shadow-sm">📞 Engineering Support</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Interactive Inquiry Prompt Card Area -->
             <div id="interactive-area" class="px-4 py-2 flex-shrink-0"></div>
 
-            <!-- Chat Input Footer -->
             <footer class="p-4 sm:p-6 bg-[#0b0f19]/80 border-t border-slate-800/80 backdrop-blur-xl flex-shrink-0">
                 <div class="max-w-4xl mx-auto flex gap-3.5 items-center">
                     <input type="text" id="user-input" placeholder="Query infrastructure clusters, documentation, or request support..." 
@@ -132,10 +125,8 @@ const userId = auth.currentUser?.uid || crypto.randomUUID();
             </footer>
         </div>
 
-        <!-- VIEW 2: DEDICATED KNOWLEDGE VAULT & RESPONSES -->
         <div id="view-responses" class="flex-1 overflow-y-auto p-4 sm:p-8 hidden bg-[#030712]">
             <div class="max-w-4xl mx-auto space-y-6">
-                <!-- Vault Header Banner -->
                 <div class="bg-gradient-to-r from-blue-950/70 via-indigo-950/50 to-slate-900 border border-blue-500/30 p-6 sm:p-8 rounded-3xl shadow-2xl relative overflow-hidden">
                     <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
                     <div class="flex items-center justify-between flex-wrap gap-4 relative z-10">
@@ -153,10 +144,7 @@ const userId = auth.currentUser?.uid || crypto.randomUUID();
                     </div>
                 </div>
 
-                <!-- Structured Responses Grid/List Container -->
-                <div id="responses-container" class="space-y-4">
-                    <!-- Populated dynamically -->
-                </div>
+                <div id="responses-container" class="space-y-4"></div>
             </div>
         </div>
 
@@ -164,9 +152,8 @@ const userId = auth.currentUser?.uid || crypto.randomUUID();
 
     <script>
         let TECHGRID_KNOWLEDGE = [];
-
-        // DOM Elements
         let chatWindow, userInput, sendBtn, responsesContainer, interactiveArea, responseCountBadge;
+        let auditLog = [];
 
         document.addEventListener('DOMContentLoaded', () => {
             chatWindow = document.getElementById('chat-window');
@@ -176,72 +163,69 @@ const userId = auth.currentUser?.uid || crypto.randomUUID();
             interactiveArea = document.getElementById('interactive-area');
             responseCountBadge = document.getElementById('response-count-badge');
 
-            // Attach event listeners
             if (sendBtn) {
-                sendBtn.addEventListener('click', handleUserMessage);
+                sendBtn.onclick = (e) => {
+                    e.preventDefault();
+                    handleUserMessage();
+                };
             }
             if (userInput) {
-                userInput.addEventListener('keypress', (e) => {
+                userInput.onkeydown = (e) => {
                     if (e.key === 'Enter') {
+                        e.preventDefault();
                         handleUserMessage();
                     }
-                });
+                };
             }
 
             loadKnowledgeBase();
         });
 
-        // Load external JSON knowledge base (responses.json) dynamically
         async function loadKnowledgeBase() {
-            try {
-                // Try fetching direct responses.json artifact or embedded fallback
-                TECHGRID_KNOWLEDGE = [
-                    {
-                        "id": "kb_overview",
-                        "keywords": ["what is", "do", "about", "techgrid", "overview", "company"],
-                        "title": "Techgrid Systems Enterprise Overview",
-                        "response": "Techgrid Systems delivers high-performance enterprise infrastructure solutions, fault-tolerant cloud architectures, and systematic technical documentation engineered for scalability, maximum uptime, and robust security.",
-                        "url": "https://www.techgrid-systems.org.uk/about",
-                        "linkText": "Explore Enterprise About Portal"
-                    },
-                    {
-                        "id": "kb_status",
-                        "keywords": ["status", "up", "down", "working", "monitor", "uptime", "health"],
-                        "title": "Infrastructure Telemetry & Live Status",
-                        "response": "Monitor real-time operational status, core service uptime metrics, network latency, and scheduled maintenance windows across all global Techgrid infrastructure clusters.",
-                        "url": "https://status.techgrid-systems.org.uk",
-                        "linkText": "Access Live Telemetry Status Portal"
-                    },
-                    {
-                        "id": "kb_infrastructure",
-                        "keywords": ["cloud", "infrastructure", "server", "hosting", "hardware", "compute"],
-                        "title": "High-Performance Bare-Metal & Cloud Infrastructure",
-                        "response": "Techgrid provides optimized enterprise bare-metal clusters and virtualized cloud infrastructure engineered for massive throughput, ultra-low latency, and absolute high availability.",
-                        "url": "https://www.techgrid-systems.org.uk/infrastructure",
-                        "linkText": "View Infrastructure Specifications"
-                    },
-                    {
-                        "id": "kb_documentation",
-                        "keywords": ["documentation", "docs", "manual", "guide", "sitemap", "api"],
-                        "title": "Systematic Technical Documentation & Sitemap",
-                        "response": "Access comprehensive infrastructure deployment guides, API reference architectures, and complete system schemas through our structured technical sitemap.",
-                        "url": "https://www.techgrid-systems.org.uk/sitemap",
-                        "linkText": "Access Technical Documentation Sitemap"
-                    },
-                    {
-                        "id": "kb_contact",
-                        "keywords": ["contact", "email", "phone", "whatsapp", "support", "reach", "escalate"],
-                        "title": "Direct Engineering & Escalation Channels",
-                        "response": "Connect directly with our 24/7 technical support and senior systems engineering team via direct email, telephone, WhatsApp, or our enterprise contact portal.",
-                        "type": "contact",
-                        "url": "https://www.techgrid-systems.org.uk/contact",
-                        "linkText": "Access Contact Portal"
-                    }
-                ];
-                updateResponseVaultUI();
-            } catch (err) {
-                console.error("Error loading knowledge base:", err);
-            }
+            TECHGRID_KNOWLEDGE = [
+                {
+                    "id": "kb_overview",
+                    "keywords": ["what is", "do", "about", "techgrid", "overview", "company"],
+                    "title": "Techgrid Systems Enterprise Overview",
+                    "response": "Techgrid Systems delivers high-performance enterprise infrastructure solutions, fault-tolerant cloud architectures, and systematic technical documentation engineered for scalability, maximum uptime, and robust security.",
+                    "url": "https://www.techgrid-systems.org.uk/about",
+                    "linkText": "Explore Enterprise About Portal"
+                },
+                {
+                    "id": "kb_status",
+                    "keywords": ["status", "up", "down", "working", "monitor", "uptime", "health", "techgrid"],
+                    "title": "Infrastructure Telemetry & Live Status",
+                    "response": "Real-time polling of status.techgrid-systems.org.uk indicates that Primary Directory Controller (DC-01) is experiencing connectivity timeouts and is currently degraded/offline. Redundancy failover is active across secondary edge clusters.",
+                    "url": "https://status.techgrid-systems.org.uk",
+                    "linkText": "Access Live Telemetry Status Portal"
+                },
+                {
+                    "id": "kb_infrastructure",
+                    "keywords": ["cloud", "infrastructure", "server", "hosting", "hardware", "compute"],
+                    "title": "High-Performance Bare-Metal & Cloud Infrastructure",
+                    "response": "Techgrid provides optimized enterprise bare-metal clusters and virtualized cloud infrastructure engineered for massive throughput, ultra-low latency, and absolute high availability.",
+                    "url": "https://www.techgrid-systems.org.uk/infrastructure",
+                    "linkText": "View Infrastructure Specifications"
+                },
+                {
+                    "id": "kb_documentation",
+                    "keywords": ["documentation", "docs", "manual", "guide", "sitemap", "api"],
+                    "title": "Systematic Technical Documentation & Sitemap",
+                    "response": "Access comprehensive infrastructure deployment guides, API reference architectures, and complete system schemas through our structured technical sitemap.",
+                    "url": "https://www.techgrid-systems.org.uk/sitemap",
+                    "linkText": "Access Technical Documentation Sitemap"
+                },
+                {
+                    "id": "kb_contact",
+                    "keywords": ["contact", "email", "phone", "whatsapp", "support", "reach", "escalate"],
+                    "title": "Direct Engineering & Escalation Channels",
+                    "response": "Connect directly with our 24/7 technical support and senior systems engineering team via direct email, telephone, WhatsApp, or our enterprise contact portal.",
+                    "type": "contact",
+                    "url": "https://www.techgrid-systems.org.uk/contact",
+                    "linkText": "Access Contact Portal"
+                }
+            ];
+            updateResponseVaultUI();
         }
 
         function switchPage(page) {
@@ -263,8 +247,6 @@ const userId = auth.currentUser?.uid || crypto.randomUUID();
                 updateResponseVaultUI();
             }
         }
-
-        let auditLog = [];
 
         function appendChatMessage(sender, text, type = 'text', linkObj = null) {
             const isUser = sender === 'user';
@@ -324,11 +306,14 @@ const userId = auth.currentUser?.uid || crypto.randomUUID();
         }
 
         function quickPrompt(queryText) {
-            userInput.value = queryText;
-            handleUserMessage();
+            if (userInput) {
+                userInput.value = queryText;
+                handleUserMessage();
+            }
         }
 
         function askIfFinished() {
+            if (!interactiveArea) return;
             interactiveArea.innerHTML = `
                 <div class="max-w-xl mx-auto glass-card p-4 rounded-2xl border border-slate-700/60 flex items-center justify-between gap-3 animate-fade-in shadow-xl">
                     <div class="text-xs font-medium text-slate-300 flex items-center gap-2">
@@ -343,7 +328,7 @@ const userId = auth.currentUser?.uid || crypto.randomUUID();
         }
 
         function resolveInquiry(action) {
-            interactiveArea.innerHTML = '';
+            if (interactiveArea) interactiveArea.innerHTML = '';
             if (action === 'yes') {
                 appendChatMessage('bot', "Glad to be of assistance. All telemetry flags have been marked as resolved in the session ledger.");
             } else {
@@ -367,8 +352,8 @@ const userId = auth.currentUser?.uid || crypto.randomUUID();
 
                 if (lowerText.includes('contact') || lowerText.includes('phone') || lowerText.includes('email') || lowerText.includes('whatsapp') || lowerText.includes('support')) {
                     appendChatMessage('bot', "Direct engineering and support communication channels for Techgrid Systems:", 'contact');
-                } else if (lowerText.includes('status') || lowerText.includes('down') || lowerText.includes('uptime') || lowerText.includes('health') || lowerText.includes('node') || lowerText.includes('dc')) {
-                    let liveStatusHtml = "⚠️ DEGRADED ALERT: Telemetry polling has detected connectivity timeouts on <strong class='text-red-400'>Primary Directory Controller (DC-01)</strong>. Core edge nodes remain operational, but redundancy failover is active.";
+                } else if (lowerText.includes('status') || lowerText.includes('down') || lowerText.includes('uptime') || lowerText.includes('health') || lowerText.includes('node') || lowerText.includes('dc') || lowerText.includes('techgrid')) {
+                    let liveStatusHtml = "⚠️ DEGRADED ALERT: Telemetry polling of <strong class='text-blue-300'>status.techgrid-systems.org.uk</strong> has detected connectivity timeouts on <strong class='text-red-400'>Primary Directory Controller (DC-01)</strong>. Core edge nodes remain operational, but redundancy failover is active.";
                     appendChatMessage('bot', liveStatusHtml, 'text', { url: "https://status.techgrid-systems.org.uk", text: "Inspect Live Telemetry Status Dashboard" });
                 } else {
                     const match = TECHGRID_KNOWLEDGE.find(entry => entry.keywords.some(k => lowerText.includes(k)));
@@ -379,7 +364,7 @@ const userId = auth.currentUser?.uid || crypto.randomUUID();
                             appendChatMessage('bot', match.response, 'text', { url: match.url, text: match.linkText });
                         }
                     } else {
-                        appendChatMessage('bot", "Telemetry request logged. Note that DC-01 is currently flagged as degraded/offline; for comprehensive infrastructure schematics, please consult our official system sitemap.", 'text', { url: "https://www.techgrid-systems.org.uk/sitemap", text: "Techgrid Sitemap & Documentation Hub" });
+                        appendChatMessage('bot', "Telemetry request logged. Note that DC-01 is currently flagged as degraded/offline; for comprehensive infrastructure schematics, please consult our official system sitemap.", 'text', { url: "https://www.techgrid-systems.org.uk/sitemap", text: "Techgrid Sitemap & Documentation Hub" });
                     }
                 }
                 askIfFinished();
@@ -393,8 +378,8 @@ const userId = auth.currentUser?.uid || crypto.randomUUID();
                 <div class="glass-card p-6 rounded-2xl border border-slate-700/60 shadow-lg hover:border-blue-500/40 transition group">
                     <div class="flex items-center justify-between mb-3">
                         <span class="text-xs font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">Record #${idx + 1} • ${item.id}</span>
-                        <a href="${item.url}" target="_blank" class="text-xs text-slate-400 hover:text-blue-400 font-mono transition flex items-center gap-1.5">
-                            ${item.url} <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        <a href="${item.url || 'https://www.techgrid-systems.org.uk'}" target="_blank" class="text-xs text-slate-400 hover:text-blue-400 font-mono transition flex items-center gap-1.5">
+                            ${item.url || 'https://www.techgrid-systems.org.uk'} <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                         </a>
                     </div>
                     <h3 class="text-lg font-bold text-white mb-2 group-hover:text-blue-300 transition">${item.title}</h3>
@@ -403,8 +388,8 @@ const userId = auth.currentUser?.uid || crypto.randomUUID();
                         <div class="flex flex-wrap gap-1.5">
                             ${item.keywords.map(k => `<span class="text-[10px] font-medium px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">#${k}</span>`).join('')}
                         </div>
-                        <a href="${item.url}" target="_blank" class="px-4 py-2 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 text-xs font-semibold border border-blue-500/30 transition shadow-sm">
-                            ${item.linkText} &rarr;
+                        <a href="${item.url || 'https://www.techgrid-systems.org.uk'}" target="_blank" class="px-4 py-2 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 text-xs font-semibold border border-blue-500/30 transition shadow-sm">
+                            ${item.linkText || 'Access Portal'} &rarr;
                         </a>
                     </div>
                 </div>
