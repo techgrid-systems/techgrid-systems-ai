@@ -1,3 +1,28 @@
+{
+"metadata": {
+"organization": "Techgrid Systems",
+"version": "4.2.0",
+"classification": "Enterprise Infrastructure Knowledge Base",
+"lastUpdated": "2026-03-30"
+},
+"knowledge": [
+// ==========================================
+// SECTION 1: COMPANY OVERVIEW & ABOUT
+// ==========================================
+{
+"id": "kb_overview",
+"keywords": [
+"about",
+"techgrid",
+"overview",
+"company"
+],
+"title": "Techgrid Systems Enterprise Overview",
+"response": "Techgrid Systems delivers high-performance enterprise infrastructure solutions, fault-tolerant cloud architectures, and systematic technical documentation engineered for scalability, maximum uptime, and robust security.",
+"url": "https://www.techgrid-systems.org.uk/about",
+"linkText": "Explore Enterprise About Portal"
+},
+
 {"metadata": {"organization": "Techgrid Systems","version": "4.2.0","classification": "Enterprise Infrastructure Knowledge Base","lastUpdated": "2026-03-30"},"knowledge": [// ==========================================// SECTION 1: COMPANY OVERVIEW & ABOUT// =========================================={"id": "kb_overview","keywords": ["what is","do","about","techgrid","overview","company"],"title": "Techgrid Systems Enterprise Overview","response": "Techgrid Systems delivers high-performance enterprise infrastructure solutions, fault-tolerant cloud architectures, and systematic technical documentation engineered for scalability, maximum uptime, and robust security.","url": "https://www.techgrid-systems.org.uk/about","linkText": "Explore Enterprise About Portal"},// ==========================================
 // SECTION 2: TELEMETRY & LIVE SYSTEM STATUS
 // ==========================================
