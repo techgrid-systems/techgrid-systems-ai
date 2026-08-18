@@ -352,7 +352,7 @@
                         }
                         nodesListHtml += '</div>';
 
-                        let liveStatusHtml = `📊 Live telemetry summary fetched from <strong class='text-blue-300'>status.techgrid-systems.org.uk</strong>:<br>${nodesListHtml}`;
+                        let liveStatusHtml = `Live data from our status page <strong class='text-blue-300'>status.techgrid-systems.org.uk</strong>:<br>${nodesListHtml}`;
                         appendChatMessage('bot', liveStatusHtml, 'text', { url: "https://status.techgrid-systems.org.uk", text: "Inspect Full Telemetry Status Dashboard" });
                     } catch (err) {
                         appendChatMessage('bot', "⚠️ Error fetching live node status from telemetry endpoint. Check CORS or network accessibility.", 'text', { url: "https://status.techgrid-systems.org.uk", text: "Access Status Dashboard" });
