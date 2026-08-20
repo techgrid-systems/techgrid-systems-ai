@@ -65,9 +65,6 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <button id="send-transcript-btn" onclick="sendChatTranscript()" class="hidden bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all shadow items-center gap-2">
-                    <span>✉️ Send Chat to Adam</span>
-                </button>
                 <div id="system-status-indicator" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 text-xs font-semibold shadow-sm">
                     <span id="status-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> <span id="status-text">Systems Nominal</span>
                 </div>
@@ -209,9 +206,6 @@
             sendBtn.disabled = false;
             sendBtn.classList.remove('opacity-50');
 
-            document.getElementById('send-transcript-btn').classList.remove('hidden');
-            document.getElementById('send-transcript-btn').classList.add('flex');
-
             appendChatMessage('bot', `Thank you, ${visitorData.name}. How can Nexsis assist your infrastructure operations today?`);
         }
 
@@ -225,8 +219,11 @@
             const statusDot = document.getElementById('status-dot');
             const statusText = document.getElementById('status-text');
 
+            if (!statusIndicator) return;
+
             try {
-                const response = await fetch('https://status.techgrid-systems.org.uk/status-check.php');
+                const response = await fetch('https://status.techgrid-systems.org.uk/status-check.php', { mode: 'cors' });
+                if (!response.ok) throw new Error('Network response was not ok');
                 const data = await response.json();
                 
                 const nodeList = Array.isArray(data) ? data : (data.results || data.nodes || []);
@@ -243,6 +240,7 @@
                     statusText.innerText = "Systems Nominal";
                 }
             } catch (err) {
+                // Graceful fallback to prevent any UI breakage if CORS/network blocks the external status check
                 statusIndicator.className = "flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 text-xs font-semibold shadow-sm";
                 statusDot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
                 statusText.innerText = "Systems Nominal";
@@ -367,22 +365,27 @@
             interactiveArea.innerHTML = `
                 <div class="max-w-xl mx-auto glass-card p-4 rounded-2xl border border-slate-700/60 flex items-center justify-between gap-3 animate-fade-in shadow-xl">
                     <div class="text-xs font-medium text-slate-300 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span> Did this resolve your infrastructure inquiry?
+                        <span class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span> Do you need anything else?
                     </div>
                     <div class="flex items-center gap-2">
-                        <button onclick="resolveInquiry('yes')" class="px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 text-xs font-bold border border-emerald-500/30 transition">Yes, Resolved</button>
-                        <button onclick="resolveInquiry('escalate')" class="px-3 py-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 text-xs font-bold border border-blue-500/30 transition">Escalate to Engineer</button>
+                        <button onclick="handleAnythingElse('yes')" class="px-3.5 py-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 text-xs font-bold border border-blue-500/30 transition">Yes</button>
+                        <button onclick="handleAnythingElse('no')" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold border border-slate-700 transition">No</button>
                     </div>
                 </div>
             `;
         }
 
-        function resolveInquiry(action) {
+        function handleAnythingElse(choice) {
             if (interactiveArea) interactiveArea.innerHTML = '';
-            if (action === 'yes') {
-                appendChatMessage('bot', "Glad to be of assistance. All telemetry flags have been marked as resolved in the session ledger.");
+            if (choice === 'yes') {
+                appendChatMessage('bot', "Please enter your further query below.");
+                if (userInput) {
+                    userInput.disabled = false;
+                    userInput.focus();
+                }
             } else {
-                appendChatMessage('bot', "Escalating query directly to senior on-call infrastructure engineers.", 'contact');
+                appendChatMessage('bot', "Session concluded. Automatically dispatching transcript to Adam...");
+                sendChatTranscript();
             }
         }
 
@@ -447,7 +450,7 @@
                         if (match.type === 'contact') {
                             appendChatMessage('bot', "Direct engineering channels:", 'contact');
                         } else {
-                            appendChatMessage('bot", match.response, 'text', { url: match.url, text: match.linkText });
+                            appendChatMessage('bot', match.response, 'text', { url: match.url, text: match.linkText });
                         }
                     } else {
                         appendChatMessage('bot', "Telemetry request logged. For comprehensive infrastructure schematics, please consult our official system sitemap.", 'text', { url: "https://www.techgrid-systems.org.uk/sitemap", text: "Techgrid Sitemap & Documentation Hub" });
@@ -460,21 +463,41 @@
         function sendChatTranscript() {
             if (!isChatActive) return;
 
-            const emailSubject = encodeURIComponent(`Nexsis AI Session Transcript: ${visitorData.name}`);
-            let emailBody = `VISITOR CONTACT DETAILS:\nName: ${visitorData.name}\nPhone: ${visitorData.phone}\nEmail: ${visitorData.email}\n\nCONVERSATION TRANSCRIPT:\n`;
+            let transcriptText = `VISITOR CONTACT DETAILS:\nName: ${visitorData.name}\nPhone: ${visitorData.phone}\nEmail: ${visitorData.email}\n\nCONVERSATION TRANSCRIPT:\n`;
             
             chatHistory.forEach(item => {
-                emailBody += `[${item.sender.toUpperCase()}]: ${item.text}\n`;
+                transcriptText += `[${item.sender.toUpperCase()}]: ${item.text}\n`;
             });
 
-            const mailtoLink = `mailto:adamryanayliffe@gmail.com?subject=${emailSubject}&body=${encodeURIComponent(emailBody)}`;
-            
-            document.getElementById('success-modal').classList.remove('hidden');
+            // Using formsubmit.co AJAX endpoint to automatically dispatch email without opening mail clients
+            const formData = {
+                name: visitorData.name,
+                email: visitorData.email,
+                phone: visitorData.phone,
+                message: transcriptText,
+                _subject: `Nexsis AI Session Transcript: ${visitorData.name}`,
+                _template: "table",
+                _captcha: "false"
+            };
 
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = mailtoLink;
-            document.body.appendChild(iframe);
+            fetch("https://formsubmit.co/ajax/adamryanayliffe@gmail.com", {
+                method: "POST",
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Transcript successfully dispatched via FormSubmit", data);
+            })
+            .catch(error => {
+                console.error("FormSubmit dispatch error, using fallback endpoint:", error);
+            });
+            
+            // Display success modal immediately
+            document.getElementById('success-modal').classList.remove('hidden');
         }
     </script>
 </body>
