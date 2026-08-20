@@ -136,8 +136,8 @@
             <div class="w-14 h-14 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-xl border border-emerald-500/20">
                 ✓
             </div>
-            <h3 class="text-lg font-bold text-slate-100">Transcript Dispatched!</h3>
-            <p class="text-xs text-slate-400 leading-relaxed">Your conversation log and visitor contact details have been successfully prepared for dispatch to <span class="text-blue-400 font-medium">adamryanayliffe@gmail.com</span>.</p>
+            <h3 class="text-lg font-bold text-slate-100">Details recorded!</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">Your details have been passed onto our service desk for further references so we can reach out to you.</p>
             <button onclick="location.reload()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-xl text-xs transition-all shadow">
                 Start New Session
             </button>
@@ -463,10 +463,20 @@
         function sendChatTranscript() {
             if (!isChatActive) return;
 
+            // Helper to strip HTML tags so no div code or markup goes into the email
+            function stripHtml(html) {
+                let tmp = document.createElement("DIV");
+                tmp.innerHTML = html;
+                return tmp.textContent || tmp.innerText || "";
+            }
+
             let transcriptText = `VISITOR CONTACT DETAILS:\nName: ${visitorData.name}\nPhone: ${visitorData.phone}\nEmail: ${visitorData.email}\n\nCONVERSATION TRANSCRIPT:\n`;
             
             chatHistory.forEach(item => {
-                transcriptText += `[${item.sender.toUpperCase()}]: ${item.text}\n`;
+                let cleanText = stripHtml(item.text).trim();
+                if (cleanText) {
+                    transcriptText += `[${item.sender.toUpperCase()}]: ${cleanText}\n`;
+                }
             });
 
             // Using formsubmit.co AJAX endpoint to automatically dispatch email without opening mail clients
