@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Techgrid Systems Enterprise AI Hub</title>
+    <link rel="icon" type="image/jpeg" href="https://techgrid-systems.github.io/techgrid-systems-logo/tgs.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
@@ -59,8 +60,9 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="font-extrabold text-base sm:text-lg tracking-tight text-white">Nexsis AI</h1>
-                        <span class="text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/30">Nexsis 4.0</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/30">Nexsis 2.0</span>
                     </div>
+                    <p>TGS Automatic Bot</p>
                 </div>
             </div>
 
@@ -76,35 +78,35 @@
 
         <div id="view-chat" class="flex-1 flex flex-col h-full overflow-hidden">
             <div id="chat-window" class="flex-1 overflow-y-auto p-4 sm:p-8 space-y-6">
+                <!-- Contact Details Form Card -->
                 <div class="flex justify-start">
                     <div class="max-w-2xl glass-card text-slate-200 p-6 sm:p-7 rounded-3xl rounded-tl-none shadow-2xl text-sm sm:text-base leading-relaxed animate-fade-in border-slate-700/60 w-full">
                         <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-700/50">
                             <div class="flex items-center gap-2 text-blue-400 font-bold text-xs uppercase tracking-wider">
-                                <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span> Nexsis 4.0 Online
+                                <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> Nexsis 2.0
                             </div>
                         </div>
                         <div class="space-y-3 mb-5">
-                            <p>Hi, I am Nexsis, the enterprise automation and intelligence engine for Techgrid Systems. I provide secure guidance across our systems, live status for our core infrastructure, and direct engineering escalation pathways in case of emergencies.</p>
-                            <p class="font-semibold text-slate-100">To begin please introduce yourself to me with your Name, Contact Number and Email address.</p>
-                            <p>Thank you</p>
+                            <p class="font-semibold text-blue-300">Please fill this form in to use Nexsis AI</p>
+                            <p>To begin please enter your details in the form below with your Name, Contact Number and Email address.</p>
                         </div>
 
                         <!-- Introductory Form -->
                         <div class="pt-4 border-t border-slate-700/50">
                             <form id="intro-form" onsubmit="handleIntroSubmit(event)" class="space-y-3">
-                                <div>
-                                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Your Name</label>
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 sm:w-36 flex-shrink-0 mb-0">Your Name</label>
                                     <input type="text" id="intro-name" required placeholder="Full Name" class="w-full bg-[#030712] border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 </div>
-                                <div>
-                                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Contact Number</label>
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 sm:w-36 flex-shrink-0 mb-0">Contact Number</label>
                                     <input type="tel" id="intro-phone" required placeholder="Phone Number" class="w-full bg-[#030712] border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 </div>
-                                <div>
-                                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Email Address</label>
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 sm:w-36 flex-shrink-0 mb-0">Email Address</label>
                                     <input type="email" id="intro-email" required placeholder="Email Address" class="w-full bg-[#030712] border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 </div>
-                                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl text-xs sm:text-sm transition-all shadow-lg flex items-center justify-center gap-2">
+                                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl text-xs sm:text-sm transition-all shadow-lg flex items-center justify-center gap-2 mt-2">
                                     <span>Start Session</span> &rarr;
                                 </button>
                             </form>
@@ -145,7 +147,8 @@
     </div>
 
     <script>
-        let TECHGRID_KNOWLEDGE = [];
+        let TECHGRID_ACTIONS = [];
+        let TECHGRID_RESPONSES = {};
         let chatWindow, userInput, sendBtn, interactiveArea, chatFooter;
         let isChatActive = false;
         let visitorData = { name: '', phone: '', email: '' };
@@ -178,6 +181,29 @@
             setInterval(checkLiveTelemetryStatus, 30000);
         });
 
+        function getTimeBasedGreeting() {
+            const hour = new Date().getHours();
+            if (hour >= 5 && hour < 12) return "Good morning";
+            if (hour >= 12 && hour < 18) return "Good afternoon";
+            return "Good evening";
+        }
+
+        async function loadKnowledgeBase() {
+            try {
+                const [actionsRes, responsesRes] = await Promise.all([
+                    fetch('actions.json'),
+                    fetch('responses.json')
+                ]);
+                if (!actionsRes.ok || !responsesRes.ok) throw new Error('Failed to load configuration.');
+                const actionsData = await actionsRes.json();
+                const responsesData = await responsesRes.json();
+                TECHGRID_ACTIONS = actionsData.actions || [];
+                TECHGRID_RESPONSES = responsesData.responses || {};
+            } catch (err) {
+                console.warn("Could not load external JSON files.", err);
+            }
+        }
+
         function handleIntroSubmit(e) {
             e.preventDefault();
             visitorData.name = document.getElementById('intro-name').value.trim();
@@ -186,16 +212,10 @@
 
             if (!visitorData.name || !visitorData.phone || !visitorData.email) return;
 
-            // Lock intro form & add original buttons back
             const introForm = document.getElementById('intro-form');
             introForm.innerHTML = `
-                <div class="bg-emerald-950/40 border border-emerald-500/30 p-3.5 rounded-xl text-emerald-300 text-xs flex items-center gap-2 font-medium mb-4">
+                <div class="bg-emerald-950/40 border border-emerald-500/30 p-3.5 rounded-xl text-emerald-300 text-xs flex items-center gap-2 font-medium">
                     <span>✓</span> Verified session initialized for <b>${escapeHtml(visitorData.name)}</b>. You are now connected to Nexsis AI.
-                </div>
-                <div class="pt-2 border-t border-slate-700/50 flex flex-wrap gap-2.5">
-                    <button onclick="quickPrompt('What cloud infrastructure solutions do you provide?')" class="text-xs bg-slate-800/80 hover:bg-blue-600/20 text-blue-300 hover:text-blue-200 px-4 py-2.5 rounded-xl border border-slate-700/80 transition font-medium flex items-center gap-2 shadow-sm">☁️ Cloud Infrastructure</button>
-                    <button onclick="quickPrompt('What is the status of Techgrid?')" class="text-xs bg-slate-800/80 hover:bg-blue-600/20 text-blue-300 hover:text-blue-200 px-4 py-2.5 rounded-xl border border-slate-700/80 transition font-medium flex items-center gap-2 shadow-sm">⚡ Live Status & Uptime</button>
-                    <button onclick="quickPrompt('How can I contact engineering support?')" class="text-xs bg-slate-800/80 hover:bg-blue-600/20 text-blue-300 hover:text-blue-200 px-4 py-2.5 rounded-xl border border-slate-700/80 transition font-medium flex items-center gap-2 shadow-sm">📞 Engineering Support</button>
                 </div>
             `;
 
@@ -206,7 +226,30 @@
             sendBtn.disabled = false;
             sendBtn.classList.remove('opacity-50');
 
-            appendChatMessage('bot', `Thank you, ${visitorData.name}. How can Nexsis assist your infrastructure operations today?`);
+            const dynamicGreeting = getTimeBasedGreeting();
+            const welcomeMessage = `${dynamicGreeting}, ${visitorData.name}. I am Nexsis, the enterprise automation and intelligence engine for Techgrid Systems. I provide secure guidance across our systems, live status for our core infrastructure, and direct engineering escalation pathways in case of emergencies.`;
+            
+            appendBotMessageWithButtons(welcomeMessage);
+        }
+
+        function appendBotMessageWithButtons(messageText) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `flex justify-start animate-fade-in`;
+
+            msgDiv.innerHTML = `
+                <div class="max-w-2xl glass-card rounded-3xl rounded-tl-none shadow-2xl border-slate-700/60 p-6 sm:p-7 text-sm sm:text-base space-y-4">
+                    <div class="text-slate-200 leading-relaxed">${messageText}</div>
+                    <div class="pt-2 border-t border-slate-700/50 flex flex-wrap gap-2.5">
+                        <button onclick="quickPrompt('What cloud infrastructure solutions do you provide?')" class="text-xs bg-slate-800/80 hover:bg-blue-600/20 text-blue-300 hover:text-blue-200 px-4 py-2.5 rounded-xl border border-slate-700/80 transition font-medium flex items-center gap-2 shadow-sm">☁️ Cloud Infrastructure</button>
+                        <button onclick="quickPrompt('status ?')" class="text-xs bg-slate-800/80 hover:bg-blue-600/20 text-blue-300 hover:text-blue-200 px-4 py-2.5 rounded-xl border border-slate-700/80 transition font-medium flex items-center gap-2 shadow-sm">⚡ Live Status & Uptime</button>
+                        <button onclick="quickPrompt('contact')" class="text-xs bg-slate-800/80 hover:bg-blue-600/20 text-blue-300 hover:text-blue-200 px-4 py-2.5 rounded-xl border border-slate-700/80 transition font-medium flex items-center gap-2 shadow-sm">📞 Engineering Support</button>
+                    </div>
+                </div>
+            `;
+
+            chatWindow.appendChild(msgDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+            chatHistory.push({ sender: 'bot', text: messageText });
         }
 
         function escapeHtml(text) {
@@ -240,57 +283,10 @@
                     statusText.innerText = "Systems Nominal";
                 }
             } catch (err) {
-                // Graceful fallback to prevent any UI breakage if CORS/network blocks the external status check
                 statusIndicator.className = "flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 text-xs font-semibold shadow-sm";
                 statusDot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
                 statusText.innerText = "Systems Nominal";
             }
-        }
-
-        async function loadKnowledgeBase() {
-            TECHGRID_KNOWLEDGE = [
-                {
-                    "id": "kb_overview",
-                    "keywords": ["what is", "do", "about", "techgrid", "overview", "company"],
-                    "title": "Techgrid Systems Enterprise Overview",
-                    "response": "Techgrid Systems delivers high-performance enterprise infrastructure solutions, fault-tolerant cloud architectures, and systematic technical documentation engineered for scalability, maximum uptime, and robust security.",
-                    "url": "https://www.techgrid-systems.org.uk/about",
-                    "linkText": "Explore Enterprise About Portal"
-                },
-                {
-                    "id": "kb_status",
-                    "keywords": ["status", "up", "down", "working", "monitor", "uptime", "health", "techgrid"],
-                    "title": "Infrastructure Telemetry & Live Status",
-                    "response": "Real-time polling of status.techgrid-systems.org.uk indicates the active state of all global infrastructure nodes.",
-                    "url": "https://status.techgrid-systems.org.uk",
-                    "linkText": "Access Live Telemetry Status Portal"
-                },
-                {
-                    "id": "kb_infrastructure",
-                    "keywords": ["cloud", "infrastructure", "server", "hosting", "hardware", "compute"],
-                    "title": "High-Performance Bare-Metal & Cloud Infrastructure",
-                    "response": "Techgrid provides optimized enterprise bare-metal clusters and virtualized cloud infrastructure engineered for massive throughput, ultra-low latency, and absolute high availability.",
-                    "url": "https://www.techgrid-systems.org.uk/infrastructure",
-                    "linkText": "View Infrastructure Specifications"
-                },
-                {
-                    "id": "kb_documentation",
-                    "keywords": ["documentation", "docs", "manual", "guide", "sitemap", "api"],
-                    "title": "Systematic Technical Documentation & Sitemap",
-                    "response": "Access comprehensive infrastructure deployment guides, API reference architectures, and complete system schemas through our structured technical sitemap.",
-                    "url": "https://www.techgrid-systems.org.uk/sitemap",
-                    "linkText": "Access Technical Documentation Sitemap"
-                },
-                {
-                    "id": "kb_contact",
-                    "keywords": ["contact", "email", "phone", "whatsapp", "support", "reach", "escalate"],
-                    "title": "Direct Engineering & Escalation Channels",
-                    "response": "Connect directly with our 24/7 technical support and senior systems engineering team via direct email, telephone, WhatsApp, or our enterprise contact portal.",
-                    "type": "contact",
-                    "url": "https://www.techgrid-systems.org.uk/contact",
-                    "linkText": "Access Contact Portal"
-                }
-            ];
         }
 
         function appendChatMessage(sender, text, type = 'text', linkObj = null) {
@@ -384,7 +380,7 @@
                     userInput.focus();
                 }
             } else {
-                appendChatMessage('bot', "Session concluded. Automatically dispatching transcript to Adam...");
+                appendChatMessage('bot', "Session concluded. Automatically dispatching transcript...");
                 sendChatTranscript();
             }
         }
@@ -404,66 +400,79 @@
                 indicator.remove();
                 const lowerText = text.toLowerCase();
 
-                if (lowerText.includes('contact') || lowerText.includes('phone') || lowerText.includes('email') || lowerText.includes('whatsapp') || lowerText.includes('support')) {
-                    appendChatMessage('bot', "Direct engineering and support communication channels for Techgrid Systems:", 'contact');
-                } else if (lowerText.includes('status') || lowerText.includes('down') || lowerText.includes('uptime') || lowerText.includes('health') || lowerText.includes('node') || lowerText.includes('dc') || lowerText.includes('techgrid')) {
-                    try {
-                        const res = await fetch('https://status.techgrid-systems.org.uk/status-check.php');
-                        const telemetry = await res.json();
-                        
-                        const nodeList = Array.isArray(telemetry) ? telemetry : (telemetry.results || telemetry.nodes || []);
-                        
-                        let nodesListHtml = '<div class="mt-3 space-y-2">';
-                        if (nodeList.length > 0) {
-                            nodeList.forEach(node => {
-                                const isUp = node.status === 'up';
-                                const badgeColor = isUp ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : 'bg-red-500/20 text-red-300 border-red-500/30';
-                                const dotColor = isUp ? 'bg-emerald-500' : 'bg-red-500';
-                                const latencyText = node.latency ? `${node.latency}ms` : 'Timeout';
-                                
-                                nodesListHtml += `
-                                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 border border-slate-700/50 text-xs">
-                                        <div class="flex items-center gap-2.5 truncate">
-                                            <span class="w-2 h-2 rounded-full ${dotColor} flex-shrink-0 animate-pulse"></span>
-                                            <span class="font-medium text-slate-200 truncate">${node.name || node.domain}</span>
-                                        </div>
-                                        <div class="flex items-center gap-2 flex-shrink-0 font-mono">
-                                            <span class="text-slate-400">${latencyText}</span>
-                                            <span class="px-2 py-0.5 rounded-md border text-[10px] font-bold uppercase ${badgeColor}">${node.status}</span>
-                                        </div>
-                                    </div>
-                                `;
-                            });
-                        } else {
-                            nodesListHtml += '<p class="text-xs text-slate-400">No active nodes returned from telemetry feed.</p>';
-                        }
-                        nodesListHtml += '</div>';
+                const matchedAction = TECHGRID_ACTIONS.find(action => 
+                    action.keywords.some(keyword => lowerText.includes(keyword))
+                );
 
-                        let liveStatusHtml = `Live data from our status page <strong class='text-blue-300'>status.techgrid-systems.org.uk</strong>:<br>${nodesListHtml}`;
-                        appendChatMessage('bot', liveStatusHtml, 'text', { url: "https://status.techgrid-systems.org.uk", text: "Inspect Full Telemetry Status Dashboard" });
-                    } catch (err) {
-                        appendChatMessage('bot', "⚠️ Error fetching live node status from telemetry endpoint. Check CORS or network accessibility.", 'text', { url: "https://status.techgrid-systems.org.uk", text: "Access Status Dashboard" });
+                if (matchedAction) {
+                    const resData = TECHGRID_RESPONSES[matchedAction.response_id] || {};
+                    switch (matchedAction.handler) {
+                        case 'fetch_live_status':
+                            await executeStatusCheckAction(resData);
+                            break;
+                        case 'render_contact_card':
+                            appendChatMessage('bot', resData.response, 'contact');
+                            break;
+                        case 'render_static':
+                        default:
+                            appendChatMessage('bot', resData.response, 'text', { 
+                                url: resData.url, 
+                                text: resData.linkText 
+                            });
+                            break;
                     }
                 } else {
-                    const match = TECHGRID_KNOWLEDGE.find(entry => entry.keywords.some(k => lowerText.includes(k)));
-                    if (match) {
-                        if (match.type === 'contact') {
-                            appendChatMessage('bot', "Direct engineering channels:", 'contact');
-                        } else {
-                            appendChatMessage('bot', match.response, 'text', { url: match.url, text: match.linkText });
-                        }
-                    } else {
-                        appendChatMessage('bot', "Telemetry request logged. For comprehensive infrastructure schematics, please consult our official system sitemap.", 'text', { url: "https://www.techgrid-systems.org.uk/sitemap", text: "Techgrid Sitemap & Documentation Hub" });
-                    }
+                    appendChatMessage('bot', "Telemetry request logged. For comprehensive infrastructure schematics, please consult our official system sitemap.", 'text', { 
+                        url: "https://www.techgrid-systems.org.uk/sitemap", 
+                        text: "Techgrid Sitemap & Documentation Hub" 
+                    });
                 }
                 askIfFinished();
             }, 850);
         }
 
+        async function executeStatusCheckAction(resData) {
+            try {
+                const res = await fetch('https://status.techgrid-systems.org.uk/status-check.php');
+                const telemetry = await res.json();
+                const nodeList = Array.isArray(telemetry) ? telemetry : (telemetry.results || telemetry.nodes || []);
+                
+                let nodesListHtml = '<div class="mt-3 space-y-2">';
+                if (nodeList.length > 0) {
+                    nodeList.forEach(node => {
+                        const isUp = node.status === 'up';
+                        const badgeColor = isUp ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : 'bg-red-500/20 text-red-300 border-red-500/30';
+                        const dotColor = isUp ? 'bg-emerald-500' : 'bg-red-500';
+                        const latencyText = node.latency ? `${node.latency}ms` : 'Timeout';
+                        
+                        nodesListHtml += `
+                            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 border border-slate-700/50 text-xs">
+                                <div class="flex items-center gap-2.5 truncate">
+                                    <span class="w-2 h-2 rounded-full ${dotColor} flex-shrink-0 animate-pulse"></span>
+                                    <span class="font-medium text-slate-200 truncate">${node.name || node.domain}</span>
+                                </div>
+                                <div class="flex items-center gap-2 flex-shrink-0 font-mono">
+                                    <span class="text-slate-400">${latencyText}</span>
+                                    <span class="px-2 py-0.5 rounded-md border text-[10px] font-bold uppercase ${badgeColor}">${node.status}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    nodesListHtml += '<p class="text-xs text-slate-400">No active nodes returned from telemetry feed.</p>';
+                }
+                nodesListHtml += '</div>';
+
+                let liveStatusHtml = `${resData.response}<br>${nodesListHtml}`;
+                appendChatMessage('bot', liveStatusHtml, 'text', { url: resData.url, text: resData.linkText });
+            } catch (err) {
+                appendChatMessage('bot', "⚠️ Error fetching live node status from telemetry endpoint.", 'text', { url: resData.url, text: resData.linkText });
+            }
+        }
+
         function sendChatTranscript() {
             if (!isChatActive) return;
 
-            // Helper to strip HTML tags so no div code or markup goes into the email
             function stripHtml(html) {
                 let tmp = document.createElement("DIV");
                 tmp.innerHTML = html;
@@ -479,7 +488,6 @@
                 }
             });
 
-            // Using formsubmit.co AJAX endpoint to automatically dispatch email without opening mail clients
             const formData = {
                 name: visitorData.name,
                 email: visitorData.email,
@@ -497,16 +505,8 @@
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Transcript successfully dispatched via FormSubmit", data);
-            })
-            .catch(error => {
-                console.error("FormSubmit dispatch error, using fallback endpoint:", error);
-            });
+            }).catch(error => console.error("FormSubmit error:", error));
             
-            // Display success modal immediately
             document.getElementById('success-modal').classList.remove('hidden');
         }
     </script>
