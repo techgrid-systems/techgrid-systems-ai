@@ -1,34 +1,39 @@
 {
   "actions": [
     {
-      "id": "action_overview",
-      "keywords": ["what is", "do", "about", "techgrid", "overview", "company"],
-      "handler": "render_static",
-      "response_id": "kb_overview"
+      "keywords": ["client portal", "portal", "dashboard", "overview", "fiber circuits", "telemetry"],
+      "response_id": "client_portal_info",
+      "handler": "render_static"
     },
     {
-      "id": "action_status",
-      "keywords": ["status", "up", "down", "working", "monitor", "uptime", "health"],
-      "handler": "fetch_live_status",
-      "response_id": "kb_status"
+      "keywords": ["incident", "ticket", "outage", "packet loss", "report problem"],
+      "response_id": "report_incident",
+      "handler": "render_static"
     },
     {
-      "id": "action_infrastructure",
-      "keywords": ["cloud", "infrastructure", "server", "hosting", "hardware", "compute"],
-      "handler": "render_static",
-      "response_id": "kb_infrastructure"
+      "keywords": ["request", "provision", "bandwidth", "upgrade", "circuit"],
+      "response_id": "request_service",
+      "handler": "render_static"
     },
     {
-      "id": "action_documentation",
-      "keywords": ["documentation", "docs", "manual", "guide", "sitemap", "api"],
-      "handler": "render_static",
-      "response_id": "kb_documentation"
+      "keywords": ["knowledge base", "guide", "onu", "qos", "firewall", "documentation"],
+      "response_id": "knowledge_base",
+      "handler": "render_static"
     },
     {
-      "id": "action_contact",
-      "keywords": ["contact", "email", "phone", "whatsapp", "support", "reach", "escalate"],
-      "handler": "render_contact_card",
-      "response_id": "kb_contact"
+      "keywords": ["status", "uptime", "nodes", "health"],
+      "response_id": "live_status",
+      "handler": "fetch_live_status"
+    },
+    {
+      "keywords": ["contact", "noc", "support", "email", "phone", "call"],
+      "response_id": "support_contacts",
+      "handler": "render_contact_card"
+    },
+    {
+      "keywords": ["company", "profile", "about", "who are you"],
+      "response_id": "company_profile",
+      "handler": "render_static"
     }
   ]
 }
