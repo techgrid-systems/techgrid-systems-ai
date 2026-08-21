@@ -6,36 +6,35 @@
     "lastUpdated": "2026-03-30"
   },
   "responses": {
-    "kb_overview": {
-      "title": "Techgrid Systems Enterprise Overview",
-      "response": "Techgrid Systems delivers high-performance enterprise infrastructure solutions, fault-tolerant cloud architectures, and systematic technical documentation engineered for scalability, maximum uptime, and robust security.",
-      "url": "https://www.techgrid-systems.org.uk/about",
-      "linkText": "Explore Enterprise About Portal"
+    "client_portal_info": {
+      "response": "The <b>Techgrid Systems Client Portal</b> serves as your organization's dedicated Enterprise Network Operations Center. Through this interface, clients can manage active fiber circuits, log high-priority incident tickets, and review continuous regional latency telemetry.",
+      "url": "https://www.techgrid-systems.org.uk/client-portal/",
+      "linkText": "Access Techgrid Client Portal"
     },
-    "kb_status": {
-      "title": "Infrastructure Telemetry & Live Status",
-      "response": "Monitor real-time operational status, core service uptime metrics, network latency, and scheduled maintenance windows across all global Techgrid infrastructure clusters.",
-      "url": "https://status.techgrid-systems.org.uk",
-      "linkText": "Access Live Telemetry Status Portal"
+    "report_incident": {
+      "response": "Use the Techgrid Incident Ticketing System to log high-priority diagnostic tickets for direct evaluation by our 24/7 Network Operations Center engineers.",
+      "url": "https://www.techgrid-systems.org.uk/client-portal/",
+      "linkText": "Open Incident Management"
     },
-    "kb_infrastructure": {
-      "title": "High-Performance Bare-Metal & Cloud Infrastructure",
-      "response": "Techgrid provides optimized enterprise bare-metal clusters and virtualized cloud infrastructure engineered for massive throughput, ultra-low latency, and absolute high availability.",
-      "url": "https://www.techgrid-systems.org.uk/infrastructure",
-      "linkText": "View Infrastructure Specifications"
+    "request_service": {
+      "response": "Submit an Infrastructure Provisioning Request through our portal to schedule bandwidth alterations, physical routing additions, or on-site enterprise audits.",
+      "url": "https://www.techgrid-systems.org.uk/client-portal/",
+      "linkText": "Manage Service Requests"
     },
-    "kb_documentation": {
-      "title": "Systematic Technical Documentation & Sitemap",
-      "response": "Access comprehensive infrastructure deployment guides, API reference architectures, and complete system schemas through our structured technical sitemap.",
-      "url": "https://www.techgrid-systems.org.uk/sitemap",
-      "linkText": "Access Technical Documentation Sitemap"
+    "knowledge_base": {
+      "response": "Explore the Techgrid Technical Knowledge Base for standard operating procedures, hardware troubleshooting guides, ONU power-cycle protocols, and white papers.",
+      "url": "https://www.techgrid-systems.org.uk/client-portal/",
+      "linkText": "Browse Knowledge Base"
     },
-    "kb_contact": {
-      "title": "Direct Engineering & Escalation Channels",
-      "response": "Connect directly with our 24/7 technical support and senior systems engineering team via direct email, telephone, WhatsApp, or our enterprise contact portal.",
-      "type": "contact",
-      "url": "https://www.techgrid-systems.org.uk/contact",
-      "linkText": "Access Contact Portal"
+    "live_status": {
+      "response": "Here is the real-time operational status across Techgrid Systems infrastructure nodes:",
+      "url": "https://www.techgrid-systems.org.uk/client-portal/",
+      "linkText": "View Full Telemetry Dashboard"
+    },
+    "company_profile": {
+      "response": "Techgrid Systems is engineered for uncompromising reliability and high-performance mission-critical data delivery, empowering modern enterprises with robust digital connectivity backed by continuous engineering oversight.",
+      "url": "https://www.techgrid-systems.org.uk/client-portal/",
+      "linkText": "View Corporate Profile"
     }
   }
 }
