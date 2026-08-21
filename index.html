@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Techgrid Systems Enterprise AI Hub</title>
     <link rel="icon" type="image/jpeg" href="https://techgrid-systems.github.io/techgrid-systems-logo/tgs.jpg">
+    <link rel="apple-touch-icon" href="https://techgrid-systems.github.io/techgrid-systems-logo/tgs.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
@@ -85,28 +86,36 @@
                                 <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> Nexsis 2.0
                             </div>
                         </div>
-                        <div class="space-y-3 mb-5">
-                            <p class="font-semibold text-blue-300">Please fill this form in to use Nexsis AI</p>
-                            <p>To begin please enter your details in the form below with your Name, Contact Number and Email address.</p>
+                        <div class="space-y-2 mb-5">
+                            <p class="font-semibold text-blue-300">To use Nexsis AI, you will need to begin by filling out the form below.</p>
+                            <p class="text-xs text-slate-400">Please provide your valid business details to initialize the session.</p>
                         </div>
 
                         <!-- Introductory Form -->
                         <div class="pt-4 border-t border-slate-700/50">
                             <form id="intro-form" onsubmit="handleIntroSubmit(event)" class="space-y-3">
                                 <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 sm:w-36 flex-shrink-0 mb-0">Your Name</label>
-                                    <input type="text" id="intro-name" required placeholder="Full Name" class="w-full bg-[#030712] border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <label class="block text-[11px] font-black uppercase tracking-wider underline decoration-blue-500/50 underline-offset-4 text-slate-300 sm:w-36 flex-shrink-0 mb-0">First Name</label>
+                                    <input type="text" id="intro-firstname" required placeholder="e.g. David" class="w-full bg-[#030712] border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 </div>
                                 <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 sm:w-36 flex-shrink-0 mb-0">Contact Number</label>
-                                    <input type="tel" id="intro-phone" required placeholder="Phone Number" class="w-full bg-[#030712] border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <label class="block text-[11px] font-black uppercase tracking-wider underline decoration-blue-500/50 underline-offset-4 text-slate-300 sm:w-36 flex-shrink-0 mb-0">Last Name</label>
+                                    <input type="text" id="intro-lastname" required placeholder="e.g. Miller" class="w-full bg-[#030712] border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 </div>
                                 <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 sm:w-36 flex-shrink-0 mb-0">Email Address</label>
-                                    <input type="email" id="intro-email" required placeholder="Email Address" class="w-full bg-[#030712] border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <label class="block text-[11px] font-black uppercase tracking-wider underline decoration-blue-500/50 underline-offset-4 text-slate-300 sm:w-36 flex-shrink-0 mb-0">Preferred Name</label>
+                                    <input type="text" id="intro-preferredname" required placeholder="e.g. Dave" class="w-full bg-[#030712] border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                                    <label class="block text-[11px] font-black uppercase tracking-wider underline decoration-blue-500/50 underline-offset-4 text-slate-300 sm:w-36 flex-shrink-0 mb-0">E-Mail Address</label>
+                                    <input type="email" id="intro-email" required placeholder="e.g. d.miller@enterprise.co.uk" class="w-full bg-[#030712] border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                                    <label class="block text-[11px] font-black uppercase tracking-wider underline decoration-blue-500/50 underline-offset-4 text-slate-300 sm:w-36 flex-shrink-0 mb-0">Business Name</label>
+                                    <input type="text" id="intro-business" required placeholder="e.g. Techgrid Systems" class="w-full bg-[#030712] border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 </div>
                                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl text-xs sm:text-sm transition-all shadow-lg flex items-center justify-center gap-2 mt-2">
-                                    <span>Start Session</span> &rarr;
+                                    <span>Launch Nexsis AI</span> &#10140;
                                 </button>
                             </form>
                         </div>
@@ -118,7 +127,7 @@
 
             <footer id="chat-footer" class="p-4 sm:p-6 bg-[#0b0f19]/80 border-t border-slate-800/80 backdrop-blur-xl flex-shrink-0 opacity-50 pointer-events-none transition-opacity">
                 <div class="max-w-4xl mx-auto flex gap-3.5 items-center">
-                    <input type="text" id="user-input" disabled placeholder="Please introduce yourself above to unlock session queries..." 
+                    <input type="text" id="user-input" disabled placeholder="Please enter your details in the form to continue..." 
                         class="flex-1 bg-slate-900/90 border border-slate-700/80 rounded-2xl px-5 py-4 text-sm sm:text-base text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition shadow-inner">
                     <button id="send-btn" disabled class="bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-2xl transition shadow-xl shadow-blue-600/30 flex items-center justify-center active:scale-95 flex-shrink-0 opacity-50">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -150,7 +159,7 @@
         let TECHGRID_RESPONSES = {};
         let chatWindow, userInput, sendBtn, interactiveArea, chatFooter;
         let isChatActive = false;
-        let visitorData = { name: '', phone: '', email: '' };
+        let visitorData = { firstName: '', lastName: '', preferredName: '', email: '', businessName: '' };
         let chatHistory = [];
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -205,16 +214,18 @@
 
         function handleIntroSubmit(e) {
             e.preventDefault();
-            visitorData.name = document.getElementById('intro-name').value.trim();
-            visitorData.phone = document.getElementById('intro-phone').value.trim();
+            visitorData.firstName = document.getElementById('intro-firstname').value.trim();
+            visitorData.lastName = document.getElementById('intro-lastname').value.trim();
+            visitorData.preferredName = document.getElementById('intro-preferredname').value.trim();
             visitorData.email = document.getElementById('intro-email').value.trim();
+            visitorData.businessName = document.getElementById('intro-business').value.trim();
 
-            if (!visitorData.name || !visitorData.phone || !visitorData.email) return;
+            if (!visitorData.firstName || !visitorData.lastName || !visitorData.preferredName || !visitorData.email || !visitorData.businessName) return;
 
             const introForm = document.getElementById('intro-form');
             introForm.innerHTML = `
                 <div class="bg-emerald-950/40 border border-emerald-500/30 p-3.5 rounded-xl text-emerald-300 text-xs flex items-center gap-2 font-medium">
-                    <span>✓</span> Verified session initialized for <b>${escapeHtml(visitorData.name)}</b>. You are now connected to Nexsis AI.
+                    <span>✓</span> Verified session initialized for <b>${escapeHtml(visitorData.preferredName)}</b> (${escapeHtml(visitorData.businessName)}). You are now connected to Nexsis AI.
                 </div>
             `;
 
@@ -226,14 +237,14 @@
             sendBtn.classList.remove('opacity-50');
 
             const dynamicGreeting = getTimeBasedGreeting();
-            const welcomeMessage = `${dynamicGreeting}, ${visitorData.name}. I am Nexsis, the enterprise automation and intelligence engine for Techgrid Systems. I provide secure guidance across our systems, live status for our core infrastructure, and direct engineering escalation pathways in case of emergencies.`;
+            const welcomeMessage = `${dynamicGreeting}, ${visitorData.preferredName}. I am Nexsis, the enterprise automation and intelligence engine for Techgrid Systems. I provide secure guidance across our systems, live status for our core infrastructure, and direct engineering escalation pathways in case of emergencies.`;
             
             appendBotMessageWithButtons(welcomeMessage);
         }
 
         function appendBotMessageWithButtons(messageText) {
             const msgDiv = document.createElement('div');
-            msgDiv.className = `flex justify-start animate-fade-in`;
+            msgDiv.className = `flex justify-start animate-fade-in mb-4`;
 
             msgDiv.innerHTML = `
                 <div class="max-w-2xl glass-card rounded-3xl rounded-tl-none shadow-2xl border-slate-700/60 p-6 sm:p-7 text-sm sm:text-base space-y-4">
@@ -291,7 +302,7 @@
         function appendChatMessage(sender, text, type = 'text', linkObj = null) {
             const isUser = sender === 'user';
             const msgDiv = document.createElement('div');
-            msgDiv.className = `flex justify-${isUser ? 'end' : 'start'} animate-fade-in`;
+            msgDiv.className = `flex justify-${isUser ? 'end' : 'start'} animate-fade-in mb-4`;
 
             let innerContent = '';
             if (type === 'contact') {
@@ -333,7 +344,7 @@
 
         function showTypingIndicator() {
             const div = document.createElement('div');
-            div.className = 'flex justify-start animate-fade-in';
+            div.className = 'flex justify-start animate-fade-in mb-4';
             div.innerHTML = `
                 <div class="glass-card p-4 rounded-3xl rounded-tl-none flex items-center gap-2">
                     <span class="text-xs text-slate-400 font-medium">Nexsis is analyzing infrastructure records</span>
@@ -360,7 +371,7 @@
             interactiveArea.innerHTML = `
                 <div class="max-w-xl mx-auto glass-card p-4 rounded-2xl border border-slate-700/60 flex items-center justify-between gap-3 animate-fade-in shadow-xl">
                     <div class="text-xs font-medium text-slate-300 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span> Do you need anything else?
+                        <span class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span> Do you need anything else, ${visitorData.preferredName}?
                     </div>
                     <div class="flex items-center gap-2">
                         <button onclick="handleAnythingElse('yes')" class="px-3.5 py-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 text-xs font-bold border border-blue-500/30 transition">Yes</button>
@@ -373,13 +384,13 @@
         function handleAnythingElse(choice) {
             if (interactiveArea) interactiveArea.innerHTML = '';
             if (choice === 'yes') {
-                appendChatMessage('bot', "Please enter your further query below.");
+                appendChatMessage('bot', `Please enter your further query below, ${visitorData.preferredName}.`);
                 if (userInput) {
                     userInput.disabled = false;
                     userInput.focus();
                 }
             } else {
-                appendChatMessage('bot', "Session concluded. Automatically dispatching transcript...");
+                appendChatMessage('bot', `Session concluded, ${visitorData.preferredName}. Automatically dispatching transcript...`);
                 sendChatTranscript();
             }
         }
@@ -421,7 +432,7 @@
                             break;
                     }
                 } else {
-                    appendChatMessage('bot', "Telemetry request logged. For comprehensive infrastructure schematics, please consult our official system sitemap.", 'text', { 
+                    appendChatMessage('bot', `Telemetry request logged. For comprehensive infrastructure schematics, please consult our official system sitemap, ${visitorData.preferredName}.`, 'text', { 
                         url: "https://www.techgrid-systems.org.uk/sitemap", 
                         text: "Techgrid Sitemap & Documentation Hub" 
                     });
@@ -478,21 +489,23 @@
                 return tmp.textContent || tmp.innerText || "";
             }
 
-            let transcriptText = `VISITOR CONTACT DETAILS:\nName: ${visitorData.name}\nPhone: ${visitorData.phone}\nEmail: ${visitorData.email}\n\nCONVERSATION TRANSCRIPT:\n`;
+            let transcriptText = `CONVERSATION TRANSCRIPT:\n\n\n`;
             
             chatHistory.forEach(item => {
                 let cleanText = stripHtml(item.text).trim();
                 if (cleanText) {
-                    transcriptText += `[${item.sender.toUpperCase()}]: ${cleanText}\n`;
+                    transcriptText += `[${item.sender.toUpperCase()}]:\n\n${cleanText}\n\n\n`;
                 }
             });
 
             const formData = {
-                name: visitorData.name,
-                email: visitorData.email,
-                phone: visitorData.phone,
+                "First Name": visitorData.firstName,
+                "Last Name": visitorData.lastName,
+                "Preferred Name": visitorData.preferredName,
+                "E-Mail Address": visitorData.email,
+                "Business Name": visitorData.businessName,
                 message: transcriptText,
-                _subject: `Nexsis AI Session Transcript: ${visitorData.name}`,
+                _subject: `Nexsis AI Session Transcript: ${visitorData.preferredName} (${visitorData.businessName})`,
                 _template: "table",
                 _captcha: "false"
             };
