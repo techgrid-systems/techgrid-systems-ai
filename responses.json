@@ -26,6 +26,11 @@
       "url": "https://www.techgrid-systems.org.uk/client-portal/",
       "linkText": "Browse Knowledge Base"
     },
+    "cloud_infrastructure": {
+      "response": "Techgrid Systems provides high-availability cloud infrastructure solutions, automated deployment pipelines, enterprise network engineering, and secure identity management platforms designed for robust enterprise operations.",
+      "url": "https://www.techgrid-systems.org.uk/sitemap",
+      "linkText": "Techgrid Sitemap & Documentation Hub"
+    },
     "live_status": {
       "response": "Here is the real-time operational status across Techgrid Systems infrastructure nodes:",
       "url": "https://www.techgrid-systems.org.uk/client-portal/",
