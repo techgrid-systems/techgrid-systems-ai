@@ -21,6 +21,11 @@
       "handler": "render_static"
     },
     {
+      "keywords": ["cloud", "infrastructure", "solutions", "hosting"],
+      "response_id": "cloud_infrastructure",
+      "handler": "render_static"
+    },
+    {
       "keywords": ["status", "uptime", "nodes", "health"],
       "response_id": "live_status",
       "handler": "fetch_live_status"
