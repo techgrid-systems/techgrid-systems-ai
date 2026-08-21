@@ -1,0 +1,34 @@
+{
+  "actions": [
+    {
+      "id": "action_overview",
+      "keywords": ["what is", "do", "about", "techgrid", "overview", "company"],
+      "handler": "render_static",
+      "response_id": "kb_overview"
+    },
+    {
+      "id": "action_status",
+      "keywords": ["status", "up", "down", "working", "monitor", "uptime", "health"],
+      "handler": "fetch_live_status",
+      "response_id": "kb_status"
+    },
+    {
+      "id": "action_infrastructure",
+      "keywords": ["cloud", "infrastructure", "server", "hosting", "hardware", "compute"],
+      "handler": "render_static",
+      "response_id": "kb_infrastructure"
+    },
+    {
+      "id": "action_documentation",
+      "keywords": ["documentation", "docs", "manual", "guide", "sitemap", "api"],
+      "handler": "render_static",
+      "response_id": "kb_documentation"
+    },
+    {
+      "id": "action_contact",
+      "keywords": ["contact", "email", "phone", "whatsapp", "support", "reach", "escalate"],
+      "handler": "render_contact_card",
+      "response_id": "kb_contact"
+    }
+  ]
+}
